@@ -11,11 +11,11 @@ public class PartyDbHelper extends SQLiteOpenHelper {
     private static final String DATABASE_NAME = "Party.db";
 
     private static final String SQL_CREATE_EVENT_TABLE =
-            "CREATE TABLE " + PartyContract.Event.TABLE_NAME + " (" +
-                    PartyContract.Event._ID + " INTEGER PRIMARY KEY AUTOINCREMENT, " +
-                    PartyContract.Event.NAME + " TEXT, " +
-                    PartyContract.Event.DATE + " NUMERIC, " +
-                    PartyContract.Event.TIME + " NUMERIC);";
+            "CREATE TABLE " + PartyContract.EventMaster.TABLE_NAME + " (" +
+                    PartyContract.EventMaster._ID + " INTEGER PRIMARY KEY AUTOINCREMENT, " +
+                    PartyContract.EventMaster.NAME + " TEXT, " +
+                    PartyContract.EventMaster.DATE + " NUMERIC, " +
+                    PartyContract.EventMaster.TIME + " NUMERIC);";
 
     private static final String SQL_CREATE_DETAILS_TABLE =
             "CREATE TABLE " + PartyContract.EventDetails.TABLE_NAME + " (" +
@@ -25,7 +25,7 @@ public class PartyDbHelper extends SQLiteOpenHelper {
                     PartyContract.EventDetails.ITEM_QUANTITY + " INTEGER, " +
                     PartyContract.EventDetails.EVENT_ID + " INTEGER, " +
                     "FOREIGN KEY(" + PartyContract.EventDetails.EVENT_ID + ") " +
-                    "REFERENCES " + PartyContract.Event.TABLE_NAME + "(" + PartyContract.Event._ID + ")" +
+                    "REFERENCES " + PartyContract.EventMaster.TABLE_NAME + "(" + PartyContract.EventMaster._ID + ")" +
                     ");";
 
     private static final String SQL_CREATE_CONTRIBUTION_TABLE =

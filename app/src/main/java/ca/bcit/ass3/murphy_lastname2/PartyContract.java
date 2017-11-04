@@ -7,7 +7,7 @@ final class PartyContract {
     private PartyContract() {
     }
 
-    static class Event implements BaseColumns {
+    static class EventMaster implements BaseColumns {
         static final String TABLE_NAME = "event";
         static final String NAME = "name";
         static final String DATE = "date";
@@ -29,6 +29,4 @@ final class PartyContract {
         static final String DATE = "date";
         static final String DETAIL_ID = "detail_id";
     }
-
-
 }
