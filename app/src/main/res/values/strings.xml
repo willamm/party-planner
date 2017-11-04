@@ -2,6 +2,9 @@
     <string name="app_name">Murphy_LastName2</string>
     <string name="action_create_event">Create Event</string>
     <string name="action_search_events">Search Events</string>
-    <string name="search_hint">Search</string>
+    <string name="search_hint">Search events</string>
     <string name="action_add_pledge">Add Pledge</string>
+
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
 </resources>

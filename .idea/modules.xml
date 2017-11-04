@@ -2,8 +2,9 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
+      <module fileurl="file://$PROJECT_DIR$/Murphy_LastName2.iml" filepath="$PROJECT_DIR$/Murphy_LastName2.iml" />
       <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" />
-      <module fileurl="file://$PROJECT_DIR$/.idea/party-planner.iml" filepath="$PROJECT_DIR$/.idea/party-planner.iml" />
+      <module fileurl="file://K:\willm_000\Documents\Android\Murphy_LastName2\.idea\party-planner.iml" filepath="K:\willm_000\Documents\Android\Murphy_LastName2\.idea\party-planner.iml" />
     </modules>
   </component>
 </project>

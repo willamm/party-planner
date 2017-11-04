@@ -1,31 +1,28 @@
 package ca.bcit.ass3.murphy_lastname2;
 
 import android.app.SearchManager;
-import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
-import android.database.sqlite.SQLiteOpenHelper;
+import android.net.Uri;
 import android.os.Bundle;
-import android.support.v4.view.MenuItemCompat;
-import android.support.v4.widget.CursorAdapter;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.app.AppCompatDialogFragment;
 import android.support.v7.widget.SearchView;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
-import android.view.View;
-import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
-import android.widget.SimpleCursorAdapter;
-import android.widget.Toast;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity implements CreateEventFragment.OnFragmentInteractionListener {
+
+    private boolean isLargeLayout;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -36,6 +33,7 @@ public class MainActivity extends AppCompatActivity {
 
         ListView lv  = findViewById(R.id.events);
 
+        isLargeLayout = getResources().getBoolean(R.bool.large_layout);
         //Reading
         SQLiteDatabase dbRead = new PartyDbHelper(this).getReadableDatabase();
 
@@ -111,9 +109,28 @@ public class MainActivity extends AppCompatActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.action_create_event: {
-
+                showDialog();
             }
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    public void showDialog() {
+        android.support.v4.app.FragmentManager fragmentManager = getSupportFragmentManager();
+        AppCompatDialogFragment newFragment = new CreateEventFragment();
+
+        if (isLargeLayout) {
+            newFragment.show(fragmentManager, "dialog");
+        } else {
+            FragmentTransaction transaction = fragmentManager.beginTransaction();
+            transaction.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN);
+
+            transaction.add(android.R.id.content, newFragment).addToBackStack(null).commit();
+        }
+    }
+
+    @Override
+    public void onFragmentInteraction(Uri uri) {
+
     }
 }
