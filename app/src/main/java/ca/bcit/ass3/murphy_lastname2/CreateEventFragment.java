@@ -5,9 +5,11 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.AppCompatDialogFragment;
+import android.support.v7.widget.Toolbar;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 
 
 /**
@@ -59,14 +61,31 @@ public class CreateEventFragment extends AppCompatDialogFragment {
             mParam1 = getArguments().getString(ARG_PARAM1);
             mParam2 = getArguments().getString(ARG_PARAM2);
         }
+        setHasOptionsMenu(true);
     }
+
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_create_event, container, false);
+        View rootView = inflater.inflate(R.layout.fragment_create_event, container, false);
+
+        Toolbar tb = rootView.findViewById(R.id.create_event_toolbar);
+        tb.inflateMenu(R.menu.create_event_menu);
+
+        // Dismisses the fragment
+        Button dismiss = (Button) rootView.findViewById(R.id.fragbutton);
+        dismiss.setOnClickListener(new View.OnClickListener() {
+
+            @Override
+            public void onClick(View view) {
+                dismiss();
+            }
+        });
+        return rootView;
     }
+
 
     // TODO: Rename method, update argument and hook method into UI event
     public void onButtonPressed(Uri uri) {

@@ -5,9 +5,21 @@
     tools:context="ca.bcit.ass3.murphy_lastname2.CreateEventFragment">
 
     <!-- TODO: Update blank fragment layout -->
+    <android.support.v7.widget.Toolbar
+        android:id="@+id/create_event_toolbar"
+        android:layout_width="match_parent"
+        android:layout_height="?attr/actionBarSize"
+        android:background="?attr/colorPrimary"
+        android:theme="@style/ThemeOverlay.AppCompat.ActionBar" />
     <TextView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:text="@string/hello_blank_fragment" />
+
+    <Button
+        android:id="@+id/fragbutton"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Exit" />
 
 </FrameLayout>

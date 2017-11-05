@@ -2,10 +2,12 @@ package ca.bcit.ass3.murphy_lastname2;
 
 import android.app.SearchManager;
 import android.content.Context;
+import android.content.Intent;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.net.Uri;
 import android.os.Bundle;
+import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.app.AppCompatDialogFragment;
@@ -109,14 +111,16 @@ public class MainActivity extends AppCompatActivity implements CreateEventFragme
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.action_create_event: {
-                showDialog();
+                //showDialog();
+                Intent i = new Intent(MainActivity.this, EventActivity.class);
+                startActivity(i);
             }
         }
         return super.onOptionsItemSelected(item);
     }
 
     public void showDialog() {
-        android.support.v4.app.FragmentManager fragmentManager = getSupportFragmentManager();
+        FragmentManager fragmentManager = getSupportFragmentManager();
         AppCompatDialogFragment newFragment = new CreateEventFragment();
 
         if (isLargeLayout) {
@@ -124,7 +128,6 @@ public class MainActivity extends AppCompatActivity implements CreateEventFragme
         } else {
             FragmentTransaction transaction = fragmentManager.beginTransaction();
             transaction.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN);
-
             transaction.add(android.R.id.content, newFragment).addToBackStack(null).commit();
         }
     }
