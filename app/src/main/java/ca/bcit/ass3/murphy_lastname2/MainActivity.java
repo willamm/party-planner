@@ -5,24 +5,19 @@ import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
-import android.net.Uri;
 import android.os.Bundle;
-import android.support.v4.app.FragmentManager;
-import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.app.AppCompatDialogFragment;
+import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.SearchView;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
-import android.widget.ArrayAdapter;
-import android.widget.ListView;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class MainActivity extends AppCompatActivity implements CreateEventFragment.OnFragmentInteractionListener {
+public class MainActivity extends AppCompatActivity {
 
     private boolean isLargeLayout;
 
@@ -33,7 +28,7 @@ public class MainActivity extends AppCompatActivity implements CreateEventFragme
         Toolbar tb = findViewById(R.id.toolbar);
         setSupportActionBar(tb);
 
-        ListView lv  = findViewById(R.id.events);
+        RecyclerView lv = findViewById(R.id.events);
 
         isLargeLayout = getResources().getBoolean(R.bool.large_layout);
         //Reading
@@ -64,7 +59,7 @@ public class MainActivity extends AppCompatActivity implements CreateEventFragme
         }
         cursor.close();
 
-        ArrayAdapter<String> adapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, items);
+        RecyclerView.Adapter<GenericViewHolder> adapter = new DataAdapter();
         lv.setAdapter(adapter);
     }
 
@@ -117,23 +112,5 @@ public class MainActivity extends AppCompatActivity implements CreateEventFragme
             }
         }
         return super.onOptionsItemSelected(item);
-    }
-
-    public void showDialog() {
-        FragmentManager fragmentManager = getSupportFragmentManager();
-        AppCompatDialogFragment newFragment = new CreateEventFragment();
-
-        if (isLargeLayout) {
-            newFragment.show(fragmentManager, "dialog");
-        } else {
-            FragmentTransaction transaction = fragmentManager.beginTransaction();
-            transaction.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN);
-            transaction.add(android.R.id.content, newFragment).addToBackStack(null).commit();
-        }
-    }
-
-    @Override
-    public void onFragmentInteraction(Uri uri) {
-
     }
 }

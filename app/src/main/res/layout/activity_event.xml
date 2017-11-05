@@ -9,5 +9,13 @@
         android:id="@+id/toolbar_event_activity"
         android:layout_height="?attr/actionBarSize"
         android:background="?attr/colorPrimary"
-        android:layout_width="match_parent" />
+        android:layout_width="match_parent">
+
+        <android.support.v7.widget.ActionMenuView
+            android:id="@+id/amv_create_event"
+            android:layout_width="match_parent"
+            android:layout_height="?attr/actionBarSize" />
+
+
+    </android.support.v7.widget.Toolbar>
 </android.support.constraint.ConstraintLayout>
