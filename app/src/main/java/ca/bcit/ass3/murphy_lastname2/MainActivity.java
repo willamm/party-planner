@@ -2,10 +2,11 @@ package ca.bcit.ass3.murphy_lastname2;
 
 import android.app.SearchManager;
 import android.content.Context;
-import android.content.Intent;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.SearchView;
@@ -25,7 +26,7 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        Toolbar tb = findViewById(R.id.toolbar);
+        Toolbar tb = findViewById(R.id.toolbar_main);
         setSupportActionBar(tb);
 
         RecyclerView lv = findViewById(R.id.events);
@@ -106,9 +107,11 @@ public class MainActivity extends AppCompatActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.action_create_event: {
-                //showDialog();
-                Intent i = new Intent(MainActivity.this, EventActivity.class);
-                startActivity(i);
+                FragmentManager fragmentManager = getSupportFragmentManager();
+                NewEventFragment newEventFragment = new NewEventFragment();
+                FragmentTransaction transaction = fragmentManager.beginTransaction();
+                transaction.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN);
+                transaction.add(android.R.id.content, newEventFragment).addToBackStack(null).commit();
             }
         }
         return super.onOptionsItemSelected(item);

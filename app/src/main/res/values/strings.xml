@@ -4,6 +4,16 @@
     <string name="action_search_events">Search Events</string>
     <string name="search_hint">Search events</string>
     <string name="action_add_pledge">Add Pledge</string>
-    <string name="title_activity_event">New event</string>
+    <string name="title_fragment_event">New event</string>
     <string name="exit_dialog">Exit</string>
+
+    <!---Event entry-->
+    <string name="event_name">Name</string>
+    <string name="event_date">Date</string>
+    <string name="event_time">Time</string>
+    <string name="button_event_cancel">Cancel</string>
+    <string name="button_event_save">Save</string>
+
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
 </resources>
