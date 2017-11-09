@@ -1,97 +1,33 @@
 package ca.bcit.ass3.murphy_lastname2;
 
+import android.content.Context;
+import android.database.Cursor;
 import android.support.v7.widget.RecyclerView;
+import android.view.LayoutInflater;
+import android.view.View;
 import android.view.ViewGroup;
+import android.widget.CursorAdapter;
+import android.widget.ListView;
 import android.widget.TextView;
 
 import java.util.List;
 
-public class DataAdapter extends RecyclerView.Adapter<GenericViewHolder> {
+public class DataAdapter extends CursorAdapter {
 
-    static class EventHolder extends GenericViewHolder {
-
-        public EventHolder(TextView itemView) {
-            super(itemView);
-        }
-
-    }
-
-    public DataAdapter() {
-        super();
+    public DataAdapter(Context context, Cursor cursor) {
+        super(context, cursor, 0);
     }
 
     @Override
-    public GenericViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        return null;
+    public View newView(Context context, Cursor cursor, ViewGroup viewGroup) {
+        return LayoutInflater.from(context).inflate(android.R.layout.simple_list_item_1, viewGroup);
     }
 
     @Override
-    public void onBindViewHolder(GenericViewHolder holder, int position) {
-
-    }
-
-    @Override
-    public void onBindViewHolder(GenericViewHolder holder, int position, List<Object> payloads) {
-        super.onBindViewHolder(holder, position, payloads);
-    }
-
-    @Override
-    public int getItemViewType(int position) {
-        return super.getItemViewType(position);
-    }
-
-    @Override
-    public void setHasStableIds(boolean hasStableIds) {
-        super.setHasStableIds(hasStableIds);
-    }
-
-    @Override
-    public long getItemId(int position) {
-        return super.getItemId(position);
-    }
-
-    @Override
-    public int getItemCount() {
-        return 0;
-    }
-
-    @Override
-    public void onViewRecycled(GenericViewHolder holder) {
-        super.onViewRecycled(holder);
-    }
-
-    @Override
-    public boolean onFailedToRecycleView(GenericViewHolder holder) {
-        return super.onFailedToRecycleView(holder);
-    }
-
-    @Override
-    public void onViewAttachedToWindow(GenericViewHolder holder) {
-        super.onViewAttachedToWindow(holder);
-    }
-
-    @Override
-    public void onViewDetachedFromWindow(GenericViewHolder holder) {
-        super.onViewDetachedFromWindow(holder);
-    }
-
-    @Override
-    public void registerAdapterDataObserver(RecyclerView.AdapterDataObserver observer) {
-        super.registerAdapterDataObserver(observer);
-    }
-
-    @Override
-    public void unregisterAdapterDataObserver(RecyclerView.AdapterDataObserver observer) {
-        super.unregisterAdapterDataObserver(observer);
-    }
-
-    @Override
-    public void onAttachedToRecyclerView(RecyclerView recyclerView) {
-        super.onAttachedToRecyclerView(recyclerView);
-    }
-
-    @Override
-    public void onDetachedFromRecyclerView(RecyclerView recyclerView) {
-        super.onDetachedFromRecyclerView(recyclerView);
+    public void bindView(View view, Context context, Cursor cursor) {
+        ListView listView = view.findViewById(R.id.events);
+        TextView eventName = new TextView(context);
+        eventName.setText(cursor.getString(cursor.getColumnIndexOrThrow(PartyContract.EventMaster.NAME)));
+        listView.addFooterView(eventName);
     }
 }

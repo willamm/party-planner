@@ -30,7 +30,9 @@ import java.util.Locale;
  */
 public class NewEventFragment extends DialogFragment {
 
+    private EditText nameInput;
     private EditText dateInput;
+    private EditText timeInput;
 
     public NewEventFragment() {
         // Required empty public constructor
@@ -107,6 +109,7 @@ public class NewEventFragment extends DialogFragment {
             return true;
         } else if (id == android.R.id.home) {
             // handle close button click here
+            getActivity().onBackPressed();
             dismiss();
             return true;
         }
