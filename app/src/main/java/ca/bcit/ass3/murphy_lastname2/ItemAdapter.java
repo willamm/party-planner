@@ -61,6 +61,10 @@ public class ItemAdapter extends ArrayAdapter<String> {
         super.notifyDataSetChanged();
     }
 
+    public void editItem(int position) {
+
+    }
+
     public void updateListView(ContentValues values) {
         if (values != null) {
             StringBuilder stringBuilder = new StringBuilder();

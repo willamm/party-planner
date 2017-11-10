@@ -211,6 +211,9 @@ public class PartyFragment extends ListFragment {
                 itemAdapter.deleteItem(acmi.position);
                 return true;
             }
+            case R.id.edit_item: {
+
+            }
         }
         return super.onContextItemSelected(item);
     }
