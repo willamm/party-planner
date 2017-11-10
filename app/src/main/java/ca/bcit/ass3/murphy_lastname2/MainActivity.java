@@ -1,34 +1,24 @@
 package ca.bcit.ass3.murphy_lastname2;
 
-import android.app.LoaderManager;
 import android.app.SearchManager;
 import android.content.Context;
-import android.content.Intent;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.net.Uri;
 import android.os.Bundle;
-import android.provider.Telephony;
-import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.SearchView;
 import android.support.v7.widget.Toolbar;
-import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
-import android.widget.CursorAdapter;
 import android.widget.ListView;
-import android.widget.Toast;
 
-import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -47,27 +37,6 @@ public class MainActivity extends AppCompatActivity implements PartyFragment.OnF
         ListView eventView = findViewById(R.id.events);
 
         isLargeLayout = getResources().getBoolean(R.bool.large_layout);
-
-        //Reading
-        SQLiteDatabase dbRead = new PartyDbHelper(this).getReadableDatabase();
-
-        String[] projection = {
-                PartyContract.EventMaster.NAME,
-                PartyContract.EventMaster.DATE,
-                PartyContract.EventMaster.TIME
-        };
-
-        Cursor cursor = dbRead.query(true,
-                PartyContract.EventMaster.TABLE_NAME,
-                projection,
-                null,
-                null,
-                null,
-                null,
-                null,
-                null);
-
-        int count = cursor.getCount();
 
         List<String> items = new ArrayList<>();
 
