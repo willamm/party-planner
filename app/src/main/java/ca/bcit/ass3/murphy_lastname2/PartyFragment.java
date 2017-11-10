@@ -7,6 +7,7 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.net.Uri;
 import android.os.Bundle;
+import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.ListFragment;
@@ -18,8 +19,10 @@ import android.support.v7.widget.Toolbar;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.EditText;
+import android.widget.ListView;
 import android.widget.Toast;
 
 import com.google.android.gms.plus.PlusOneButton;
@@ -37,7 +40,10 @@ import java.util.List;
  */
 public class PartyFragment extends ListFragment {
 
+    private ItemAdapter itemAdapter;
     private PartyDbHelper partyDbHelper;
+    private SQLiteDatabase db;
+
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_PARAM1 = "param1";
@@ -55,7 +61,11 @@ public class PartyFragment extends ListFragment {
     private EditText itemQuantity;
 
     private static final String JOIN_ON_EVENT_ID_QUERY =
-            "SELECT " + PartyContract.EventDetails.TABLE_NAME + "." + PartyContract.EventDetails.ITEM_NAME +
+            "SELECT " + PartyContract.EventDetails.TABLE_NAME + "." + PartyContract.EventDetails._ID + "," +
+                        PartyContract.EventDetails.TABLE_NAME + "." + PartyContract.EventDetails.ITEM_NAME + "," +
+                        PartyContract.EventDetails.TABLE_NAME + "." + PartyContract.EventDetails.ITEM_UNIT  + "," +
+                        PartyContract.EventDetails.TABLE_NAME + "." + PartyContract.EventDetails.ITEM_QUANTITY + "," +
+                        PartyContract.EventDetails.TABLE_NAME + "." + PartyContract.EventDetails.EVENT_ID +
             " FROM " + PartyContract.EventDetails.TABLE_NAME +
             " JOIN " + PartyContract.EventMaster.TABLE_NAME +
             " ON " + PartyContract.EventDetails.TABLE_NAME + "." + PartyContract.EventDetails.EVENT_ID
@@ -104,18 +114,22 @@ public class PartyFragment extends ListFragment {
 
         FloatingActionButton addItemsButton = rootView.findViewById(R.id.add_party_items);
 
-        //Display party items in ListView
-        SQLiteDatabase db = partyDbHelper.getReadableDatabase();
+        // Display party items in ListView
+        // TODO : Figure out how to use CursorAdapter
+        db = partyDbHelper.getReadableDatabase();
         Cursor cursor = db.rawQuery(JOIN_ON_EVENT_ID_QUERY
                 , null);
         List<String> itemList = new ArrayList<>();
         while(cursor.moveToNext()) {
-            itemList.add(cursor.getString(cursor.getColumnIndexOrThrow(PartyContract.EventDetails.ITEM_NAME)));
+            String itemName = cursor.getString(cursor.getColumnIndexOrThrow(PartyContract.EventDetails.ITEM_NAME));
+            String itemUnit = cursor.getString(cursor.getColumnIndexOrThrow(PartyContract.EventDetails.ITEM_UNIT));
+            String itemQuantity = cursor.getString(cursor.getColumnIndexOrThrow(PartyContract.EventDetails.ITEM_QUANTITY));
+            itemList.add(itemName + " " + itemUnit + " " + itemQuantity);
         }
+        itemAdapter = new ItemAdapter(getContext(), R.layout.layout_items, itemList);
+        setListAdapter(itemAdapter);
 
-        ArrayAdapter<String> adapter = new ArrayAdapter<>(getActivity(), android.R.layout.simple_list_item_1, itemList);
-
-        setListAdapter(adapter);
+        cursor.close();
 
         addItemsButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -147,11 +161,12 @@ public class PartyFragment extends ListFragment {
                 //put id here
                 values.put(PartyContract.EventDetails.EVENT_ID, PartyFragment.this.getArguments().getInt("EVENT_ID"));
 
-                SQLiteDatabase rdb = partyDbHelper.getWritableDatabase();
-                rdb.insertWithOnConflict(PartyContract.EventDetails.TABLE_NAME
+                db = partyDbHelper.getWritableDatabase();
+                db.insertWithOnConflict(PartyContract.EventDetails.TABLE_NAME
                         , null
                         , values
                         , SQLiteDatabase.CONFLICT_REPLACE);
+                itemAdapter.notifyDataSetChanged();
             }
         });
         alertDialog.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
@@ -175,9 +190,30 @@ public class PartyFragment extends ListFragment {
     }
 
     @Override
+    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
+        super.onActivityCreated(savedInstanceState);
+
+        ListView lv = getListView();
+        lv.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+                AlertDialog.Builder deleteItemDialog = new AlertDialog.Builder(getContext());
+
+                deleteItemDialog.show();
+            }
+        });
+    }
+
+    @Override
     public void onDetach() {
         super.onDetach();
         mListener = null;
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        db.close();
     }
 
     /**

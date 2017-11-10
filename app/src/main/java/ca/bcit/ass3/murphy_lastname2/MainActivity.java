@@ -79,6 +79,7 @@ public class MainActivity extends AppCompatActivity implements PartyFragment.OnF
                 transaction.commit();
             }
         });
+        db.close();
     }
 
     @Override

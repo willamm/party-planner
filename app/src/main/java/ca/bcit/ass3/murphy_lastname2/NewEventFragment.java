@@ -29,7 +29,7 @@ import java.util.Locale;
  * A simple {@link Fragment} subclass.
  */
 public class NewEventFragment extends DialogFragment {
-
+//TODO : Soft keyboard does not close when pressing the "x" in the top left corner.
     private EditText nameInput;
     private EditText dateInput;
     private EditText timeInput;
