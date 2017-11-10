@@ -25,6 +25,8 @@ import java.util.List;
 public class MainActivity extends AppCompatActivity implements PartyFragment.OnFragmentInteractionListener {
 
     private boolean isLargeLayout;
+    private ListView eventView;
+    private SQLiteDatabase db;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -34,12 +36,14 @@ public class MainActivity extends AppCompatActivity implements PartyFragment.OnF
         Toolbar tb = findViewById(R.id.toolbar_main);
         setSupportActionBar(tb);
 
-        ListView eventView = findViewById(R.id.events);
+        eventView = findViewById(R.id.events);
 
         isLargeLayout = getResources().getBoolean(R.bool.large_layout);
 
         List<String> items = new ArrayList<>();
 
+        updateEventList();
+        /*
         PartyDbHelper helper = new PartyDbHelper(this);
         SQLiteDatabase db = helper.getReadableDatabase();
         Cursor cursor = db.query(PartyContract.EventMaster.TABLE_NAME,
@@ -56,6 +60,8 @@ public class MainActivity extends AppCompatActivity implements PartyFragment.OnF
 
         ArrayAdapter<String> adapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, list);
         eventView.setAdapter(adapter);
+        */
+
         eventView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
@@ -72,6 +78,12 @@ public class MainActivity extends AppCompatActivity implements PartyFragment.OnF
                 transaction.commit();
             }
         });
+        //db.close();
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
         db.close();
     }
 
@@ -126,6 +138,25 @@ public class MainActivity extends AppCompatActivity implements PartyFragment.OnF
             }
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    public void updateEventList() {
+        PartyDbHelper helper = new PartyDbHelper(this);
+        db = helper.getReadableDatabase();
+        Cursor cursor = db.query(PartyContract.EventMaster.TABLE_NAME,
+                new String[] {PartyContract.EventMaster._ID,PartyContract.EventMaster.NAME}, null,null,null,null,null);
+
+        final List<String> list = new ArrayList<>();
+
+        while (cursor.moveToNext()) {
+            String id = cursor.getString(cursor.getColumnIndexOrThrow(PartyContract.EventMaster._ID));
+            String name = cursor.getString(cursor.getColumnIndexOrThrow(PartyContract.EventMaster.NAME));
+            list.add(id + " " + name);
+        }
+        cursor.close();
+
+        ArrayAdapter<String> adapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, list);
+        eventView.setAdapter(adapter);
     }
 
     @Override

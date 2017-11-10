@@ -151,6 +151,7 @@ public class NewEventFragment extends DialogFragment {
                 String time = timeInput.getText().toString();
                 insertNewEvent(name, date, time);
                 db.close();
+                ((MainActivity)getActivity()).updateEventList();
                 dismiss();
             }
             return true;
