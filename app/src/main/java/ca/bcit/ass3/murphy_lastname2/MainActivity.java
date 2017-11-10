@@ -51,6 +51,8 @@ public class MainActivity extends AppCompatActivity {
                 null,
                 null);
 
+        int count = cursor.getCount();
+
         List<String> items = new ArrayList<>();
         while (cursor.moveToNext()) {
             String temp = cursor.getString(cursor.getColumnIndexOrThrow(PartyContract.EventMaster.NAME));
