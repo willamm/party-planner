@@ -37,7 +37,6 @@ import java.util.Locale;
  * A simple {@link Fragment} subclass.
  */
 public class NewEventFragment extends DialogFragment {
-<<<<<<< HEAD
 
     private EditText nameInput;
     private EditText dateInput;
@@ -45,12 +44,6 @@ public class NewEventFragment extends DialogFragment {
 
     private SQLiteDatabase db;
     private Cursor cursor;
-=======
-//TODO : Soft keyboard does not close when pressing the "x" in the top left corner.
-    private EditText nameInput;
-    private EditText dateInput;
-    private EditText timeInput;
->>>>>>> 9fce58aad3413847bbe8ddb8d0a028e35165e5c4
 
     public NewEventFragment() {
         // Required empty public constructor
