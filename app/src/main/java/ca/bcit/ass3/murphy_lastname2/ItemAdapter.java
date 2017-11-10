@@ -42,12 +42,14 @@ public class ItemAdapter extends ArrayAdapter<String> {
             holder.item = row.findViewById(R.id.list_item_name);
             holder.unit = row.findViewById(R.id.list_item_unit);
             holder.quantity = row.findViewById(R.id.list_item_quantity);
-
             row.setTag(holder);
         } else {
             holder = (ViewHolder)row.getTag();
         }
         String[] itemDetails = mItemList.get(position).split(" ");
+        if (itemDetails.length == 0) {
+            return row;
+        }
         holder.item.setText(itemDetails[0]);
         holder.unit.setText(itemDetails[1]);
         holder.quantity.setText(itemDetails[2]);
@@ -56,16 +58,18 @@ public class ItemAdapter extends ArrayAdapter<String> {
 
 
     public void updateListView(ContentValues values) {
-        List<String> copy = new ArrayList<>(mItemList);
-        mItemList.clear();
-        StringBuilder stringBuilder = new StringBuilder();
-        stringBuilder.append(values.get(PartyContract.EventDetails.ITEM_NAME));
-        stringBuilder.append(" ");
-        stringBuilder.append(values.get(PartyContract.EventDetails.ITEM_UNIT));
-        stringBuilder.append(" ");
-        stringBuilder.append(values.get(PartyContract.EventDetails.ITEM_QUANTITY));
-        copy.add(stringBuilder.toString());
-        mItemList.addAll(copy);
+        if (values != null) {
+            List<String> copy = new ArrayList<>(mItemList);
+            mItemList.clear();
+            StringBuilder stringBuilder = new StringBuilder();
+            stringBuilder.append(values.get(PartyContract.EventDetails.ITEM_NAME));
+            stringBuilder.append(" ");
+            stringBuilder.append(values.get(PartyContract.EventDetails.ITEM_UNIT));
+            stringBuilder.append(" ");
+            stringBuilder.append(values.get(PartyContract.EventDetails.ITEM_QUANTITY));
+            copy.add(stringBuilder.toString());
+            mItemList.addAll(copy);
+        }
         super.notifyDataSetChanged();
     }
 

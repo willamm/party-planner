@@ -9,6 +9,7 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
+import android.support.design.widget.TextInputEditText;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.ListFragment;
 import android.support.v4.widget.SimpleCursorAdapter;
@@ -16,8 +17,10 @@ import android.support.v7.app.ActionBar;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.text.TextUtils;
 import android.view.ContextMenu;
 import android.view.LayoutInflater;
+import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
@@ -105,7 +108,6 @@ public class PartyFragment extends ListFragment {
 
         FloatingActionButton addItemsButton = rootView.findViewById(R.id.add_party_items);
 
-        // Display party items in ListView
         // TODO : Figure out how to use CursorAdapter
         db = partyDbHelper.getReadableDatabase();
         Cursor cursor = db.rawQuery(JOIN_ON_EVENT_ID_QUERY
@@ -146,25 +148,25 @@ public class PartyFragment extends ListFragment {
             @Override
             public void onClick(DialogInterface dialogInterface, int i) {
                 ContentValues values = new ContentValues();
-                values.put(PartyContract.EventDetails.ITEM_NAME, itemName.getText().toString());
-                values.put(PartyContract.EventDetails.ITEM_UNIT, itemType.getText().toString());
-                values.put(PartyContract.EventDetails.ITEM_QUANTITY, itemQuantity.getText().toString());
-                values.put(PartyContract.EventDetails.EVENT_ID, PartyFragment.this.getArguments().getInt("EVENT_ID"));
+                if (!TextUtils.isEmpty(itemName.getText()) && !TextUtils.isEmpty(itemType.getText())
+                        && !TextUtils.isEmpty(itemQuantity.getText())) {
+                    values.put(PartyContract.EventDetails.ITEM_NAME, itemName.getText().toString());
+                    values.put(PartyContract.EventDetails.ITEM_UNIT, itemType.getText().toString());
+                    values.put(PartyContract.EventDetails.ITEM_QUANTITY, itemQuantity.getText().toString());
+                    values.put(PartyContract.EventDetails.EVENT_ID, PartyFragment.this.getArguments().getInt("EVENT_ID"));
 
-                db = partyDbHelper.getWritableDatabase();
-                db.insertWithOnConflict(PartyContract.EventDetails.TABLE_NAME
-                        , null
-                        , values
-                        , SQLiteDatabase.CONFLICT_REPLACE);
-                itemAdapter.updateListView(values);
+                    db = partyDbHelper.getWritableDatabase();
+                    db.insertWithOnConflict(PartyContract.EventDetails.TABLE_NAME
+                            , null
+                            , values
+                            , SQLiteDatabase.CONFLICT_REPLACE);
+                    itemAdapter.updateListView(values);
+                } else {
+                    Toast.makeText(getContext(), "Cannot have empty fields", Toast.LENGTH_LONG).show();
+                }
             }
         });
-        alertDialog.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialogInterface, int i) {
-
-            }
-        });
+        alertDialog.setNegativeButton("Cancel", null);
         alertDialog.show();
     }
 
@@ -194,16 +196,18 @@ public class PartyFragment extends ListFragment {
 
     @Override
     public void onCreateContextMenu(ContextMenu menu, View v, ContextMenu.ContextMenuInfo menuInfo) {
+        super.onCreateContextMenu(menu, v, menuInfo);
         if (v.getId() == listView.getId()) {
-            AdapterView.AdapterContextMenuInfo acmi = (AdapterView.AdapterContextMenuInfo) menuInfo;
-            String str = (String) listView.getItemAtPosition(acmi.position);
-            menu.add("Edit");
-            menu.add("Delete");
+            MenuInflater inflater = getActivity().getMenuInflater();
+            inflater.inflate(R.menu.item_context, menu);
         }
     }
 
     @Override
     public boolean onContextItemSelected(MenuItem item) {
+        switch(item.getItemId()) {
+
+        }
         return super.onContextItemSelected(item);
     }
 
