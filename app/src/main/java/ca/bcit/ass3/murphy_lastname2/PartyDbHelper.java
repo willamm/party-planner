@@ -11,6 +11,8 @@ public class PartyDbHelper extends SQLiteOpenHelper {
 
     private static final String DATABASE_NAME = "Party.db";
 
+    private Context context;
+
     private static final String SQL_CREATE_EVENT_TABLE =
             "CREATE TABLE " + PartyContract.EventMaster.TABLE_NAME + " (" +
                     PartyContract.EventMaster._ID + " INTEGER PRIMARY KEY AUTOINCREMENT, " +
@@ -49,13 +51,14 @@ public class PartyDbHelper extends SQLiteOpenHelper {
 
     PartyDbHelper(Context context) {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
+        this.context = context;
     }
 
     @Override
     public void onCreate(SQLiteDatabase db) {
         db.execSQL(SQL_CREATE_EVENT_TABLE);
         db.execSQL(SQL_CREATE_DETAILS_TABLE);
-        db.execSQL(SQL_CREATE_CONTRIBUTION_TABLE);
+        //db.execSQL(SQL_CREATE_CONTRIBUTION_TABLE);
     }
 
     @Override
