@@ -6,6 +6,7 @@ import android.content.DialogInterface;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.net.Uri;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
@@ -108,7 +109,6 @@ public class PartyFragment extends ListFragment {
 
         FloatingActionButton addItemsButton = rootView.findViewById(R.id.add_party_items);
 
-        // TODO : Figure out how to use CursorAdapter
         db = partyDbHelper.getReadableDatabase();
         Cursor cursor = db.rawQuery(JOIN_ON_EVENT_ID_QUERY
                 , null);
@@ -205,8 +205,12 @@ public class PartyFragment extends ListFragment {
 
     @Override
     public boolean onContextItemSelected(MenuItem item) {
+        AdapterView.AdapterContextMenuInfo acmi = (AdapterView.AdapterContextMenuInfo) item.getMenuInfo();
         switch(item.getItemId()) {
-
+            case R.id.delete_item: {
+                itemAdapter.deleteItem(acmi.position);
+                return true;
+            }
         }
         return super.onContextItemSelected(item);
     }

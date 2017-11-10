@@ -56,19 +56,20 @@ public class ItemAdapter extends ArrayAdapter<String> {
         return row;
     }
 
+    public void deleteItem(int position) {
+        mItemList.remove(position);
+        super.notifyDataSetChanged();
+    }
 
     public void updateListView(ContentValues values) {
         if (values != null) {
-            List<String> copy = new ArrayList<>(mItemList);
-            mItemList.clear();
             StringBuilder stringBuilder = new StringBuilder();
             stringBuilder.append(values.get(PartyContract.EventDetails.ITEM_NAME));
             stringBuilder.append(" ");
             stringBuilder.append(values.get(PartyContract.EventDetails.ITEM_UNIT));
             stringBuilder.append(" ");
             stringBuilder.append(values.get(PartyContract.EventDetails.ITEM_QUANTITY));
-            copy.add(stringBuilder.toString());
-            mItemList.addAll(copy);
+            mItemList.add(stringBuilder.toString());
         }
         super.notifyDataSetChanged();
     }
