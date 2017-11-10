@@ -7,13 +7,16 @@
     <string name="title_fragment_event">New event</string>
     <string name="exit_dialog">Exit</string>
 
-    <!---Event entry-->
+    <!---Event entry strings-->
     <string name="event_name">Name</string>
     <string name="event_date">Date</string>
     <string name="event_time">Time</string>
     <string name="button_event_cancel">Cancel</string>
     <string name="button_event_save">Save</string>
 
-    <!-- TODO: Remove or change this placeholder text -->
-    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <!-- Party fragment strings -->
+    <string name="party_fragment_title">Party Details</string>
+    <string name="item_quantity_hint">Quantity</string>
+    <string name="item_name_hint">Name</string>
+    <string name="item_unit_hint">Unit</string>
 </resources>

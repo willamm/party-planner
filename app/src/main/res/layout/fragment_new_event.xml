@@ -3,6 +3,9 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="?android:attr/windowBackground"
+    android:focusable="true"
+    android:clickable="true"
     android:fitsSystemWindows="true">
 
     <android.support.design.widget.AppBarLayout
@@ -16,7 +19,7 @@
             android:layout_width="match_parent"
             android:layout_height="?attr/actionBarSize"
             android:background="?attr/colorPrimary"
-            app:popupTheme="@style/ThemeOverlay.AppCompat" />
+            app:popupTheme="@style/ThemeOverlay.AppCompat.ActionBar" />
 
     </android.support.design.widget.AppBarLayout>
 
@@ -28,7 +31,7 @@
         android:layout_marginStart="8dp"
         android:layout_marginTop="28dp"
         android:ems="10"
-        android:hint="Event name"
+        android:hint="@string/event_name"
         android:inputType="text"
         android:labelFor="@id/event_name"
         app:layout_constraintEnd_toEndOf="parent"
@@ -45,7 +48,7 @@
         android:layout_marginTop="28dp"
         android:ems="10"
         android:focusable="false"
-        android:hint="Date"
+        android:hint="@string/event_date"
         android:inputType="date"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.059"
@@ -60,7 +63,7 @@
         android:layout_marginStart="8dp"
         android:layout_marginTop="28dp"
         android:ems="10"
-        android:hint="Time"
+        android:hint="@string/event_time"
         android:inputType="time"
         android:focusable="false"
         app:layout_constraintEnd_toEndOf="parent"
