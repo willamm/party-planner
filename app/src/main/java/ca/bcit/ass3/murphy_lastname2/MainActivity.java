@@ -68,8 +68,7 @@ public class MainActivity extends AppCompatActivity implements PartyFragment.OnF
                 Bundle b = new Bundle();
                 b.putInt("EVENT_ID", i + 1);
 
-                PartyFragment partyFragment = new PartyFragment();
-                partyFragment.setArguments(b);
+                PartyFragment partyFragment = PartyFragment.newInstance(b);
                 FragmentManager fragmentManager = getSupportFragmentManager();
                 FragmentTransaction transaction = fragmentManager.beginTransaction();
                 transaction.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE);
@@ -133,7 +132,7 @@ public class MainActivity extends AppCompatActivity implements PartyFragment.OnF
                 FragmentManager fragmentManager = getSupportFragmentManager();
                 NewEventFragment newEventFragment = new NewEventFragment();
                 FragmentTransaction transaction = fragmentManager.beginTransaction();
-                transaction.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN);
+                transaction.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE);
                 transaction.add(android.R.id.content, newEventFragment).addToBackStack(null).commit();
             }
         }

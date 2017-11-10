@@ -1,5 +1,6 @@
 package ca.bcit.ass3.murphy_lastname2;
 
+import android.content.ContentValues;
 import android.content.Context;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
@@ -10,6 +11,7 @@ import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.TextView;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -50,6 +52,21 @@ public class ItemAdapter extends ArrayAdapter<String> {
         holder.unit.setText(itemDetails[1]);
         holder.quantity.setText(itemDetails[2]);
         return row;
+    }
+
+
+    public void updateListView(ContentValues values) {
+        List<String> copy = new ArrayList<>(mItemList);
+        mItemList.clear();
+        StringBuilder stringBuilder = new StringBuilder();
+        stringBuilder.append(values.get(PartyContract.EventDetails.ITEM_NAME));
+        stringBuilder.append(" ");
+        stringBuilder.append(values.get(PartyContract.EventDetails.ITEM_UNIT));
+        stringBuilder.append(" ");
+        stringBuilder.append(values.get(PartyContract.EventDetails.ITEM_QUANTITY));
+        copy.add(stringBuilder.toString());
+        mItemList.addAll(copy);
+        super.notifyDataSetChanged();
     }
 
     private static class ViewHolder {

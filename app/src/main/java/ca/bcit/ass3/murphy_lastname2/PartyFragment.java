@@ -16,7 +16,9 @@ import android.support.v7.app.ActionBar;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.view.ContextMenu;
 import android.view.LayoutInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
@@ -31,7 +33,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * A fragment with a Google +1 button.
  * Activities that contain this fragment must implement the
  * {@link PartyFragment.OnFragmentInteractionListener} interface
  * to handle interaction events.
@@ -60,6 +61,8 @@ public class PartyFragment extends ListFragment {
     private EditText itemType;
     private EditText itemQuantity;
 
+    private ListView listView;
+
     private static final String JOIN_ON_EVENT_ID_QUERY =
             "SELECT " + PartyContract.EventDetails.TABLE_NAME + "." + PartyContract.EventDetails._ID + "," +
                         PartyContract.EventDetails.TABLE_NAME + "." + PartyContract.EventDetails.ITEM_NAME + "," +
@@ -75,21 +78,9 @@ public class PartyFragment extends ListFragment {
         // Required empty public constructor
     }
 
-    /**
-     * Use this factory method to create a new instance of
-     * this fragment using the provided parameters.
-     *
-     * @param param1 Parameter 1.
-     * @param param2 Parameter 2.
-     * @return A new instance of fragment PartyFragment.
-     */
-    // TODO: Rename and change types and number of parameters
-    public static PartyFragment newInstance(String param1, String param2) {
+    public static PartyFragment newInstance(Bundle bundle) {
         PartyFragment fragment = new PartyFragment();
-        Bundle args = new Bundle();
-        args.putString(ARG_PARAM1, param1);
-        args.putString(ARG_PARAM2, param2);
-        fragment.setArguments(args);
+        fragment.setArguments(bundle);
         return fragment;
     }
 
@@ -158,7 +149,6 @@ public class PartyFragment extends ListFragment {
                 values.put(PartyContract.EventDetails.ITEM_NAME, itemName.getText().toString());
                 values.put(PartyContract.EventDetails.ITEM_UNIT, itemType.getText().toString());
                 values.put(PartyContract.EventDetails.ITEM_QUANTITY, itemQuantity.getText().toString());
-                //put id here
                 values.put(PartyContract.EventDetails.EVENT_ID, PartyFragment.this.getArguments().getInt("EVENT_ID"));
 
                 db = partyDbHelper.getWritableDatabase();
@@ -166,7 +156,7 @@ public class PartyFragment extends ListFragment {
                         , null
                         , values
                         , SQLiteDatabase.CONFLICT_REPLACE);
-                itemAdapter.notifyDataSetChanged();
+                itemAdapter.updateListView(values);
             }
         });
         alertDialog.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
@@ -192,16 +182,8 @@ public class PartyFragment extends ListFragment {
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-
-        ListView lv = getListView();
-        lv.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-                AlertDialog.Builder deleteItemDialog = new AlertDialog.Builder(getContext());
-
-                deleteItemDialog.show();
-            }
-        });
+        listView = getListView();
+        registerForContextMenu(listView);
     }
 
     @Override
@@ -211,9 +193,24 @@ public class PartyFragment extends ListFragment {
     }
 
     @Override
+    public void onCreateContextMenu(ContextMenu menu, View v, ContextMenu.ContextMenuInfo menuInfo) {
+        if (v.getId() == listView.getId()) {
+            AdapterView.AdapterContextMenuInfo acmi = (AdapterView.AdapterContextMenuInfo) menuInfo;
+            String str = (String) listView.getItemAtPosition(acmi.position);
+            menu.add("Edit");
+            menu.add("Delete");
+        }
+    }
+
+    @Override
+    public boolean onContextItemSelected(MenuItem item) {
+        return super.onContextItemSelected(item);
+    }
+
+    @Override
     public void onDestroy() {
-        super.onDestroy();
         db.close();
+        super.onDestroy();
     }
 
     /**
