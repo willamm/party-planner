@@ -16,4 +16,7 @@
 
     <!-- Party fragment strings -->
     <string name="party_fragment_title">Party Details</string>
+    <string name="item_quantity_hint">Quantity</string>
+    <string name="item_name_hint">Name</string>
+    <string name="item_unit_hint">Unit</string>
 </resources>

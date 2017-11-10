@@ -8,6 +8,7 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.net.Uri;
 import android.os.Bundle;
+import android.provider.Telephony;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
@@ -50,18 +51,26 @@ public class MainActivity extends AppCompatActivity implements PartyFragment.OnF
         PartyDbHelper helper = new PartyDbHelper(this);
         SQLiteDatabase db = helper.getReadableDatabase();
         Cursor cursor = db.query(PartyContract.EventMaster.TABLE_NAME,
-                new String[] {PartyContract.EventMaster.NAME}, null,null,null,null,null);
+                new String[] {PartyContract.EventMaster._ID,PartyContract.EventMaster.NAME}, null,null,null,null,null);
 
         final List<String> list = new ArrayList<>();
         while (cursor.moveToNext()) {
-            list.add(cursor.getString(cursor.getColumnIndexOrThrow(PartyContract.EventMaster.NAME)));
+            String id = cursor.getString(cursor.getColumnIndexOrThrow(PartyContract.EventMaster._ID));
+            String name = cursor.getString(cursor.getColumnIndexOrThrow(PartyContract.EventMaster.NAME));
+            list.add(id + " " + name);
         }
+        cursor.close();
+
         ArrayAdapter<String> adapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, list);
         eventView.setAdapter(adapter);
         eventView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+                Bundle b = new Bundle();
+                b.putInt("EVENT_ID", i + 1);
+
                 PartyFragment partyFragment = new PartyFragment();
+                partyFragment.setArguments(b);
                 FragmentManager fragmentManager = getSupportFragmentManager();
                 FragmentTransaction transaction = fragmentManager.beginTransaction();
                 transaction.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE);
