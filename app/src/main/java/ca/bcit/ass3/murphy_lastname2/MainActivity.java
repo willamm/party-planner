@@ -25,10 +25,11 @@ import java.util.List;
 
 public class MainActivity extends AppCompatActivity implements PartyFragment.OnFragmentInteractionListener {
 
+    public static final String EDIT_EVENT_KEY = "edit_event";
     private boolean isLargeLayout;
     private ListView eventView;
     private SQLiteDatabase db;
-    String[] eventToDelete;
+    String[] eventToModify;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -180,7 +181,7 @@ public class MainActivity extends AppCompatActivity implements PartyFragment.OnF
         if (v.getId() == eventView.getId()) {
             AdapterView.AdapterContextMenuInfo acmi = (AdapterView.AdapterContextMenuInfo) menuInfo;
             String str = (String) eventView.getItemAtPosition(acmi.position);
-            eventToDelete = str.split("\n");
+            eventToModify = str.split("\n");
             menu.add("Edit");
             menu.add("Delete");
         }
@@ -191,6 +192,10 @@ public class MainActivity extends AppCompatActivity implements PartyFragment.OnF
         if (item.getTitle() == "Edit") {
             FragmentManager fragmentManager = getSupportFragmentManager();
             NewEventFragment newEventFragment = new NewEventFragment();
+            Bundle args = new Bundle();
+            args.putStringArray(EDIT_EVENT_KEY, eventToModify);
+            newEventFragment.setArguments(args);
+
             FragmentTransaction transaction = fragmentManager.beginTransaction();
             transaction.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE);
             transaction.add(android.R.id.content, newEventFragment).addToBackStack(null).commit();
@@ -198,7 +203,7 @@ public class MainActivity extends AppCompatActivity implements PartyFragment.OnF
         } else if (item.getTitle() == "Delete") {
             int success = db.delete(
                     PartyContract.EventMaster.TABLE_NAME,
-                    PartyContract.EventMaster._ID + "=" + eventToDelete[0],
+                    PartyContract.EventMaster._ID + "=" + eventToModify[0],
                     null);
             if (success > 0) {
                 updateEventList();
