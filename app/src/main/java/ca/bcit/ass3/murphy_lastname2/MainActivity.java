@@ -48,13 +48,12 @@ public class MainActivity extends AppCompatActivity implements PartyFragment.OnF
 
         updateEventList();
         /*
-        PartyDbHelper helper = new PartyDbHelper(this);
+        PartyDbHelper helper = PartyDbHelper.getInstance(this);
         SQLiteDatabase db = helper.getReadableDatabase();
         Cursor cursor = db.query(PartyContract.EventMaster.TABLE_NAME,
                 new String[] {PartyContract.EventMaster._ID,PartyContract.EventMaster.NAME}, null,null,null,null,null);
 
         final List<String> list = new ArrayList<>();
-
         while (cursor.moveToNext()) {
             String id = cursor.getString(cursor.getColumnIndexOrThrow(PartyContract.EventMaster._ID));
             String name = cursor.getString(cursor.getColumnIndexOrThrow(PartyContract.EventMaster.NAME));
@@ -144,7 +143,7 @@ public class MainActivity extends AppCompatActivity implements PartyFragment.OnF
     }
 
     public void updateEventList() {
-        PartyDbHelper helper = new PartyDbHelper(this);
+        PartyDbHelper helper = PartyDbHelper.getInstance(this);;
         db = helper.getReadableDatabase();
         Cursor cursor = db.query(PartyContract.EventMaster.TABLE_NAME,
                 new String[] {PartyContract.EventMaster._ID,PartyContract.EventMaster.NAME,PartyContract.EventMaster.DATE,PartyContract.EventMaster.TIME},

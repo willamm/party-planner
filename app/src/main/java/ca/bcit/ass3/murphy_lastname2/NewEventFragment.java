@@ -68,7 +68,7 @@ public class NewEventFragment extends DialogFragment {
         if (actionBar != null) {
             actionBar.setDisplayHomeAsUpEnabled(true);
             actionBar.setHomeButtonEnabled(true);
-            actionBar.setHomeAsUpIndicator(android.R.drawable.ic_menu_close_clear_cancel);
+            actionBar.setHomeAsUpIndicator(R.drawable.ic_close_black_24dp);
         }
         setHasOptionsMenu(true);
 
@@ -183,7 +183,7 @@ public class NewEventFragment extends DialogFragment {
     }
 
     private void updateExistEvent(String name, String date, String time) {
-        SQLiteOpenHelper helper = new PartyDbHelper(getContext());
+        SQLiteOpenHelper helper = PartyDbHelper.getInstance(getContext());;
         db = helper.getWritableDatabase();
 
         ContentValues values = new ContentValues();
@@ -196,7 +196,7 @@ public class NewEventFragment extends DialogFragment {
     }
 
     private void insertNewEvent(String name, String date, String time) {
-        SQLiteOpenHelper helper = new PartyDbHelper(getContext());
+        SQLiteOpenHelper helper = PartyDbHelper.getInstance(getContext());
         db = helper.getWritableDatabase();
 
         ContentValues values = new ContentValues();
@@ -215,4 +215,5 @@ public class NewEventFragment extends DialogFragment {
             return true;
         }
     }
+
 }

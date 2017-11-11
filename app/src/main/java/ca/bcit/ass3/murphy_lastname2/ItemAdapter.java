@@ -3,6 +3,7 @@ package ca.bcit.ass3.murphy_lastname2;
 import android.content.ContentValues;
 import android.content.Context;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -42,30 +43,34 @@ public class ItemAdapter extends ArrayAdapter<String> {
             holder.item = row.findViewById(R.id.list_item_name);
             holder.unit = row.findViewById(R.id.list_item_unit);
             holder.quantity = row.findViewById(R.id.list_item_quantity);
-
             row.setTag(holder);
         } else {
             holder = (ViewHolder)row.getTag();
         }
         String[] itemDetails = mItemList.get(position).split(" ");
+        if (itemDetails.length == 0) {
+            return row;
+        }
         holder.item.setText(itemDetails[0]);
         holder.unit.setText(itemDetails[1]);
         holder.quantity.setText(itemDetails[2]);
         return row;
     }
 
+    public void editItem(int position) {
+
+    }
 
     public void updateListView(ContentValues values) {
-        List<String> copy = new ArrayList<>(mItemList);
-        mItemList.clear();
-        StringBuilder stringBuilder = new StringBuilder();
-        stringBuilder.append(values.get(PartyContract.EventDetails.ITEM_NAME));
-        stringBuilder.append(" ");
-        stringBuilder.append(values.get(PartyContract.EventDetails.ITEM_UNIT));
-        stringBuilder.append(" ");
-        stringBuilder.append(values.get(PartyContract.EventDetails.ITEM_QUANTITY));
-        copy.add(stringBuilder.toString());
-        mItemList.addAll(copy);
+        if (values != null) {
+            StringBuilder stringBuilder = new StringBuilder();
+            stringBuilder.append(values.get(PartyContract.EventDetails.ITEM_NAME));
+            stringBuilder.append(" ");
+            stringBuilder.append(values.get(PartyContract.EventDetails.ITEM_UNIT));
+            stringBuilder.append(" ");
+            stringBuilder.append(values.get(PartyContract.EventDetails.ITEM_QUANTITY));
+            mItemList.add(stringBuilder.toString());
+        }
         super.notifyDataSetChanged();
     }
 
