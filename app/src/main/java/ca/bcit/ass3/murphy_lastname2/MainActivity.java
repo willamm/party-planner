@@ -11,6 +11,7 @@ import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.SearchView;
 import android.support.v7.widget.Toolbar;
+import android.view.ContextMenu;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -27,6 +28,7 @@ public class MainActivity extends AppCompatActivity implements PartyFragment.OnF
     private boolean isLargeLayout;
     private ListView eventView;
     private SQLiteDatabase db;
+    String[] eventToDelete;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -37,6 +39,7 @@ public class MainActivity extends AppCompatActivity implements PartyFragment.OnF
         setSupportActionBar(tb);
 
         eventView = findViewById(R.id.events);
+        registerForContextMenu(eventView);
 
         isLargeLayout = getResources().getBoolean(R.bool.large_layout);
 
@@ -143,14 +146,23 @@ public class MainActivity extends AppCompatActivity implements PartyFragment.OnF
         PartyDbHelper helper = new PartyDbHelper(this);
         db = helper.getReadableDatabase();
         Cursor cursor = db.query(PartyContract.EventMaster.TABLE_NAME,
-                new String[] {PartyContract.EventMaster._ID,PartyContract.EventMaster.NAME}, null,null,null,null,null);
+                new String[] {PartyContract.EventMaster._ID,PartyContract.EventMaster.NAME,PartyContract.EventMaster.DATE,PartyContract.EventMaster.TIME},
+                null,
+                null,
+                null,
+                null,
+                null);
 
         final List<String> list = new ArrayList<>();
 
-        while (cursor.moveToNext()) {
-            String id = cursor.getString(cursor.getColumnIndexOrThrow(PartyContract.EventMaster._ID));
-            String name = cursor.getString(cursor.getColumnIndexOrThrow(PartyContract.EventMaster.NAME));
-            list.add(id + " " + name);
+        if (cursor.moveToFirst()) {
+            do {
+                String id = cursor.getString(cursor.getColumnIndexOrThrow(PartyContract.EventMaster._ID));
+                String name = cursor.getString(cursor.getColumnIndexOrThrow(PartyContract.EventMaster.NAME));
+                String date = cursor.getString(cursor.getColumnIndexOrThrow(PartyContract.EventMaster.DATE));
+                String time = cursor.getString(cursor.getColumnIndexOrThrow(PartyContract.EventMaster.TIME));
+                list.add(id + "\n" + name + "\n" + date + "\n" + time);
+            } while (cursor.moveToNext());
         }
         cursor.close();
 
@@ -161,5 +173,39 @@ public class MainActivity extends AppCompatActivity implements PartyFragment.OnF
     @Override
     public void onFragmentInteraction(Uri uri) {
 
+    }
+
+    @Override
+    public void onCreateContextMenu(ContextMenu menu, View v, ContextMenu.ContextMenuInfo menuInfo) {
+        if (v.getId() == eventView.getId()) {
+            AdapterView.AdapterContextMenuInfo acmi = (AdapterView.AdapterContextMenuInfo) menuInfo;
+            String str = (String) eventView.getItemAtPosition(acmi.position);
+            eventToDelete = str.split("\n");
+            menu.add("Edit");
+            menu.add("Delete");
+        }
+    }
+
+    @Override
+    public boolean onContextItemSelected(MenuItem item) {
+        if (item.getTitle() == "Edit") {
+            FragmentManager fragmentManager = getSupportFragmentManager();
+            NewEventFragment newEventFragment = new NewEventFragment();
+            FragmentTransaction transaction = fragmentManager.beginTransaction();
+            transaction.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE);
+            transaction.add(android.R.id.content, newEventFragment).addToBackStack(null).commit();
+            return true;
+        } else if (item.getTitle() == "Delete") {
+            int success = db.delete(
+                    PartyContract.EventMaster.TABLE_NAME,
+                    PartyContract.EventMaster._ID + "=" + eventToDelete[0],
+                    null);
+            if (success > 0) {
+                updateEventList();
+            }
+            return success > 0;
+        } else {
+            return super.onContextItemSelected(item);
+        }
     }
 }
