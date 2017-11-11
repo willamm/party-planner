@@ -1,4 +1,4 @@
-package ca.bcit.ass3.murphy_lastname2;
+package ca.bcit.ass3.murphy_lee;
 
 import android.app.SearchManager;
 import android.content.Context;
@@ -29,6 +29,7 @@ public class MainActivity extends AppCompatActivity implements PartyFragment.OnF
     private boolean isLargeLayout;
     private ListView eventView;
     private SQLiteDatabase db;
+    String[] eventToAddItem;
     String[] eventToModify;
 
     @Override
@@ -69,7 +70,9 @@ public class MainActivity extends AppCompatActivity implements PartyFragment.OnF
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
                 Bundle b = new Bundle();
-                b.putInt("EVENT_ID", i + 1);
+                String str = (String) eventView.getItemAtPosition(i);
+                eventToAddItem = str.split("\n");
+                b.putInt("EVENT_ID", Integer.valueOf(eventToAddItem[0]));
 
                 PartyFragment partyFragment = PartyFragment.newInstance(b);
                 FragmentManager fragmentManager = getSupportFragmentManager();
