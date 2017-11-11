@@ -209,13 +209,7 @@ public class PartyFragment extends ListFragment {
         AdapterView.AdapterContextMenuInfo acmi = (AdapterView.AdapterContextMenuInfo) item.getMenuInfo();
         switch(item.getItemId()) {
             case R.id.delete_item: {
-                String toDelete = itemAdapter.getItem(acmi.position);
-                itemAdapter.remove(toDelete);
-                String[] toArray = toDelete.split(" ");
-                String name = toArray[0];
-                String whereClause = "ITEM_NAME=?";
-                String[] whereArgs = new String[] {name};
-                db.delete(PartyContract.EventDetails.TABLE_NAME, whereClause, whereArgs);
+                itemAdapter.remove(itemAdapter.getItem(acmi.position));
                 return true;
             }
             case R.id.edit_item: {

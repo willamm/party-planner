@@ -57,6 +57,17 @@ public class ItemAdapter extends ArrayAdapter<String> {
         return row;
     }
 
+    @Override
+    public void remove(String str) {
+        super.remove(str);
+        String[] toArray = str.split(" ");
+        String name = toArray[0];
+        String whereClause = "ITEM_NAME=?";
+        String[] whereArgs = new String[] {name};
+        PartyDbHelper.getInstance(getContext())
+                .getWritableDatabase()
+                .delete(PartyContract.EventDetails.TABLE_NAME, whereClause, whereArgs);
+    }
     public void editItem(int position) {
 
     }
