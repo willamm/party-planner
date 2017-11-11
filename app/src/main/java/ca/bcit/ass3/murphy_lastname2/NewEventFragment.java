@@ -164,7 +164,7 @@ public class NewEventFragment extends DialogFragment {
     }
 
     private void insertNewEvent(String name, String date, String time) {
-        SQLiteOpenHelper helper = new PartyDbHelper(getContext());
+        SQLiteOpenHelper helper = PartyDbHelper.getInstance(getContext());
         db = helper.getWritableDatabase();
 
         ContentValues values = new ContentValues();

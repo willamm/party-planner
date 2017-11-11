@@ -3,6 +3,7 @@ package ca.bcit.ass3.murphy_lastname2;
 import android.content.ContentValues;
 import android.content.Context;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -54,11 +55,6 @@ public class ItemAdapter extends ArrayAdapter<String> {
         holder.unit.setText(itemDetails[1]);
         holder.quantity.setText(itemDetails[2]);
         return row;
-    }
-
-    public void deleteItem(int position) {
-        mItemList.remove(position);
-        super.notifyDataSetChanged();
     }
 
     public void editItem(int position) {

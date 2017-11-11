@@ -48,7 +48,7 @@ public class MainActivity extends AppCompatActivity implements PartyFragment.OnF
 
         isLargeLayout = getResources().getBoolean(R.bool.large_layout);
 
-        PartyDbHelper helper = new PartyDbHelper(this);
+        PartyDbHelper helper = PartyDbHelper.getInstance(this);
         SQLiteDatabase db = helper.getReadableDatabase();
         Cursor cursor = db.query(PartyContract.EventMaster.TABLE_NAME,
                 new String[] {PartyContract.EventMaster._ID,PartyContract.EventMaster.NAME}, null,null,null,null,null);

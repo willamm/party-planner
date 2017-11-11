@@ -29,6 +29,7 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.ListView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.android.gms.plus.PlusOneButton;
@@ -91,7 +92,7 @@ public class PartyFragment extends ListFragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        partyDbHelper = new PartyDbHelper(getActivity());
+        partyDbHelper = PartyDbHelper.getInstance(getActivity());
         if (getArguments() != null) {
             mParam1 = getArguments().getString(ARG_PARAM1);
             mParam2 = getArguments().getString(ARG_PARAM2);
@@ -208,7 +209,13 @@ public class PartyFragment extends ListFragment {
         AdapterView.AdapterContextMenuInfo acmi = (AdapterView.AdapterContextMenuInfo) item.getMenuInfo();
         switch(item.getItemId()) {
             case R.id.delete_item: {
-                itemAdapter.deleteItem(acmi.position);
+                String toDelete = itemAdapter.getItem(acmi.position);
+                itemAdapter.remove(toDelete);
+                String[] toArray = toDelete.split(" ");
+                String name = toArray[0];
+                String whereClause = "ITEM_NAME=?";
+                String[] whereArgs = new String[] {name};
+                db.delete(PartyContract.EventDetails.TABLE_NAME, whereClause, whereArgs);
                 return true;
             }
             case R.id.edit_item: {

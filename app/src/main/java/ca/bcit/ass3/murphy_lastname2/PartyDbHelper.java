@@ -11,8 +11,6 @@ public class PartyDbHelper extends SQLiteOpenHelper {
 
     private static final String DATABASE_NAME = "Party.db";
 
-    private Context context;
-
     private static final String SQL_CREATE_EVENT_TABLE =
             "CREATE TABLE " + PartyContract.EventMaster.TABLE_NAME + " (" +
                     PartyContract.EventMaster._ID + " INTEGER PRIMARY KEY AUTOINCREMENT, " +
@@ -49,9 +47,17 @@ public class PartyDbHelper extends SQLiteOpenHelper {
                     "INSERT INTO " + PartyContract.EventDetails.TABLE_NAME +
                     "VALUES('Paper plates', 'Pieces', 20, 1);";
 
-    PartyDbHelper(Context context) {
+    public static PartyDbHelper instance;
+
+    public static synchronized PartyDbHelper getInstance(Context context) {
+        if (instance == null) {
+            return new PartyDbHelper(context);
+        }
+        return instance;
+    }
+
+    private PartyDbHelper(Context context) {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
-        this.context = context;
     }
 
     @Override
@@ -63,9 +69,9 @@ public class PartyDbHelper extends SQLiteOpenHelper {
 
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
-        db.execSQL("DROP TABLE IF EXISTS " + PartyContract.EventMaster.TABLE_NAME);
-        db.execSQL("DROP TABLE IF EXISTS " + PartyContract.EventDetails.TABLE_NAME);
         db.execSQL("DROP TABLE IF EXISTS " + PartyContract.Contribution.TABLE_NAME);
+        db.execSQL("DROP TABLE IF EXISTS " + PartyContract.EventDetails.TABLE_NAME);
+        db.execSQL("DROP TABLE IF EXISTS " + PartyContract.EventMaster.TABLE_NAME);
         onCreate(db);
         db.execSQL(SQL_INITIAL_DATA);
     }
@@ -78,5 +84,12 @@ public class PartyDbHelper extends SQLiteOpenHelper {
     @Override
     public void onConfigure(SQLiteDatabase db) {
         db.setForeignKeyConstraintsEnabled(true);
+    }
+
+    public void delete(int position, String table_name, Context context) {
+        SQLiteDatabase db = getInstance(context).getWritableDatabase();
+        String whereClause = "_id=?";
+        String[] whereArgs = new String[] {String.valueOf(position)};
+        db.delete(table_name, whereClause, whereArgs);
     }
 }
