@@ -168,7 +168,8 @@ public class NewEventFragment extends DialogFragment {
                     insertNewEvent(name, date, time);
                 }
                 db.close();
-                ((MainActivity)getActivity()).updateEventList();
+                MainActivity mainActivity = (MainActivity)getActivity();
+                mainActivity.updateEventList(mainActivity.getEventListAll());
                 dismiss();
             }
             return true;

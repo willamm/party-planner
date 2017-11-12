@@ -19,6 +19,7 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
+import android.widget.Toast;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -47,7 +48,7 @@ public class MainActivity extends AppCompatActivity implements PartyFragment.OnF
 
         List<String> items = new ArrayList<>();
 
-        updateEventList();
+        updateEventList(getEventListAll());
         /*
         PartyDbHelper helper = PartyDbHelper.getInstance(this);
         SQLiteDatabase db = helper.getReadableDatabase();
@@ -104,6 +105,7 @@ public class MainActivity extends AppCompatActivity implements PartyFragment.OnF
         SearchManager searchManager = (SearchManager) getSystemService(Context.SEARCH_SERVICE);
         SearchView searchView = (SearchView) searchItem.getActionView();
         searchView.setSearchableInfo(searchManager.getSearchableInfo(getComponentName()));
+        searchView.setQueryHint("Search Events");
 
         searchItem.setOnActionExpandListener(new MenuItem.OnActionExpandListener() {
             @Override
@@ -116,6 +118,28 @@ public class MainActivity extends AppCompatActivity implements PartyFragment.OnF
             public boolean onMenuItemActionCollapse(MenuItem menuItem) {
                 MainActivity.this.setItemsVisibility(menu, searchItem, true);
                 return true;
+            }
+        });
+
+
+        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+
+            @Override
+            public boolean onQueryTextChange(String newText) {
+                String sqlQuery = getEventListByKeyword(newText);
+                return updateEventList(sqlQuery);
+            }
+
+            @Override
+            public boolean onQueryTextSubmit(String query) {
+                String sqlQuery = getEventListByKeyword(query);
+                if (!updateEventList(sqlQuery)) {
+                    Toast.makeText(MainActivity.this,"No records found!", Toast.LENGTH_LONG).show();
+                    return false;
+                } else {
+                    Toast.makeText(MainActivity.this, "Records found!",Toast.LENGTH_LONG).show();
+                    return true;
+                }
             }
         });
 
@@ -145,18 +169,34 @@ public class MainActivity extends AppCompatActivity implements PartyFragment.OnF
         return super.onOptionsItemSelected(item);
     }
 
-    public void updateEventList() {
+    public String getEventListAll() {
+        return "SELECT " +
+                PartyContract.EventMaster._ID + ", " +
+                PartyContract.EventMaster.NAME + ", " +
+                PartyContract.EventMaster.DATE + ", " +
+                PartyContract.EventMaster.TIME +
+                " FROM " + PartyContract.EventMaster.TABLE_NAME;
+    }
+
+    public String getEventListByKeyword(String query) {
+        return "SELECT " +
+                PartyContract.EventMaster._ID + ", " +
+                PartyContract.EventMaster.NAME + ", " +
+                PartyContract.EventMaster.DATE + ", " +
+                PartyContract.EventMaster.TIME +
+                " FROM " + PartyContract.EventMaster.TABLE_NAME +
+                " WHERE " + PartyContract.EventMaster.NAME + " LIKE '%" + query + "%' " +
+                " OR " + PartyContract.EventMaster.DATE + " LIKE '%" + query + "%' " +
+                " OR " + PartyContract.EventMaster.TIME + " LIKE '%" + query + "%' ";
+    }
+
+    public boolean updateEventList(String sqlQuery) {
         PartyDbHelper helper = PartyDbHelper.getInstance(this);;
         db = helper.getReadableDatabase();
-        Cursor cursor = db.query(PartyContract.EventMaster.TABLE_NAME,
-                new String[] {PartyContract.EventMaster._ID,PartyContract.EventMaster.NAME,PartyContract.EventMaster.DATE,PartyContract.EventMaster.TIME},
-                null,
-                null,
-                null,
-                null,
-                null);
+        Cursor cursor = db.rawQuery(sqlQuery, null);
 
         final List<String> list = new ArrayList<>();
+        boolean somethingToShow = false;
 
         if (cursor.moveToFirst()) {
             do {
@@ -166,11 +206,14 @@ public class MainActivity extends AppCompatActivity implements PartyFragment.OnF
                 String time = cursor.getString(cursor.getColumnIndexOrThrow(PartyContract.EventMaster.TIME));
                 list.add(id + "\n" + name + "\n" + date + "\n" + time);
             } while (cursor.moveToNext());
+            somethingToShow = true;
         }
-        cursor.close();
 
         ArrayAdapter<String> adapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, list);
         eventView.setAdapter(adapter);
+        cursor.close();
+        db.close();
+        return somethingToShow;
     }
 
     @Override
@@ -208,7 +251,7 @@ public class MainActivity extends AppCompatActivity implements PartyFragment.OnF
                     PartyContract.EventMaster._ID + "=" + eventToModify[0],
                     null);
             if (success > 0) {
-                updateEventList();
+                updateEventList(getEventListAll());
             }
             return success > 0;
         } else {
