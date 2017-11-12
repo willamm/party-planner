@@ -3,7 +3,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="ca.bcit.ass3.murphy_lastname2.MainActivity">
+    tools:context="ca.bcit.ass3.murphy_lee.MainActivity">
 
     <android.support.v7.widget.Toolbar
         android:id="@+id/toolbar_main"

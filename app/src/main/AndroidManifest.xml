@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="ca.bcit.ass3.murphy_lastname2">
+    package="ca.bcit.ass3.murphy_lee">
 
     <!-- To access Google+ APIs: -->
     <uses-permission android:name="android.permission.INTERNET" />
@@ -12,7 +12,7 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".MainActivity">
+        <activity android:name="ca.bcit.ass3.murphy_lee.MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -22,7 +22,7 @@
                 <action android:name="android.intent.action.VIEW" />
             </intent-filter>
         </activity>
-        <activity android:name=".SearchResultsActivity">
+        <activity android:name="ca.bcit.ass3.murphy_lee.SearchResultsActivity">
             <meta-data
                 android:name="android.app.searchable"
                 android:resource="@xml/searchable" />
