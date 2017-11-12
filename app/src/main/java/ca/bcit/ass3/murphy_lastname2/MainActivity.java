@@ -1,71 +1,84 @@
 package ca.bcit.ass3.murphy_lastname2;
 
+import android.app.LoaderManager;
 import android.app.SearchManager;
-import android.content.ContentValues;
 import android.content.Context;
+import android.content.Intent;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
-import android.database.sqlite.SQLiteOpenHelper;
+import android.net.Uri;
 import android.os.Bundle;
-import android.support.v4.view.MenuItemCompat;
-import android.support.v4.widget.CursorAdapter;
+import android.provider.Telephony;
+import android.support.v4.app.FragmentActivity;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.SearchView;
 import android.support.v7.widget.Toolbar;
+import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.CursorAdapter;
 import android.widget.ListView;
-import android.widget.SimpleCursorAdapter;
 import android.widget.Toast;
 
+import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.List;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity implements PartyFragment.OnFragmentInteractionListener {
+
+    private boolean isLargeLayout;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        Toolbar tb = findViewById(R.id.toolbar);
+
+        Toolbar tb = findViewById(R.id.toolbar_main);
         setSupportActionBar(tb);
 
-        ListView lv  = findViewById(R.id.events);
+        ListView eventView = findViewById(R.id.events);
 
-        //Reading
-        SQLiteDatabase dbRead = new PartyDbHelper(this).getReadableDatabase();
+        isLargeLayout = getResources().getBoolean(R.bool.large_layout);
 
-        String[] projection = {
-                PartyContract.EventMaster.NAME,
-                PartyContract.EventMaster.DATE,
-                PartyContract.EventMaster.TIME
-        };
+        PartyDbHelper helper = PartyDbHelper.getInstance(this);
+        SQLiteDatabase db = helper.getReadableDatabase();
+        Cursor cursor = db.query(PartyContract.EventMaster.TABLE_NAME,
+                new String[] {PartyContract.EventMaster._ID,PartyContract.EventMaster.NAME}, null,null,null,null,null);
 
-        Cursor cursor = dbRead.query(true,
-                PartyContract.EventMaster.TABLE_NAME,
-                projection,
-                null,
-                null,
-                null,
-                null,
-                null,
-                null);
-
-        List<String> items = new ArrayList<>();
+        final List<String> list = new ArrayList<>();
         while (cursor.moveToNext()) {
-            String temp = cursor.getString(cursor.getColumnIndexOrThrow(PartyContract.EventMaster.NAME));
-            temp += " " + cursor.getString(cursor.getColumnIndexOrThrow(PartyContract.EventMaster.DATE));
-            temp += " " + cursor.getString(cursor.getColumnIndexOrThrow(PartyContract.EventMaster.TIME));
-            items.add(temp);
+            String id = cursor.getString(cursor.getColumnIndexOrThrow(PartyContract.EventMaster._ID));
+            String name = cursor.getString(cursor.getColumnIndexOrThrow(PartyContract.EventMaster.NAME));
+            list.add(id + " " + name);
         }
         cursor.close();
 
-        ArrayAdapter<String> adapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, items);
-        lv.setAdapter(adapter);
+        ArrayAdapter<String> adapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, list);
+        eventView.setAdapter(adapter);
+        eventView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+                Bundle b = new Bundle();
+                b.putInt("EVENT_ID", i + 1);
+
+                PartyFragment partyFragment = PartyFragment.newInstance(b);
+                FragmentManager fragmentManager = getSupportFragmentManager();
+                FragmentTransaction transaction = fragmentManager.beginTransaction();
+                transaction.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE);
+                transaction.replace(android.R.id.content, partyFragment);
+                transaction.addToBackStack(null);
+                transaction.commit();
+            }
+        });
+        db.close();
     }
 
     @Override
@@ -111,9 +124,18 @@ public class MainActivity extends AppCompatActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.action_create_event: {
-
+                FragmentManager fragmentManager = getSupportFragmentManager();
+                NewEventFragment newEventFragment = new NewEventFragment();
+                FragmentTransaction transaction = fragmentManager.beginTransaction();
+                transaction.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE);
+                transaction.add(android.R.id.content, newEventFragment).addToBackStack(null).commit();
             }
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    public void onFragmentInteraction(Uri uri) {
+
     }
 }

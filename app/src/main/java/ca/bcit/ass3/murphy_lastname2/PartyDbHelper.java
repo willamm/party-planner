@@ -1,6 +1,7 @@
 package ca.bcit.ass3.murphy_lastname2;
 
 import android.content.Context;
+import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 
@@ -39,7 +40,23 @@ public class PartyDbHelper extends SQLiteOpenHelper {
                     "REFERENCES " + PartyContract.EventDetails.TABLE_NAME + "(" + PartyContract.EventDetails._ID + ")" +
                     ");";
 
-    PartyDbHelper(Context context) {
+    private static final String SQL_INITIAL_DATA =
+            "INSERT INTO " + PartyContract.EventMaster.TABLE_NAME +
+                    "(" + PartyContract.EventMaster.NAME + ", " + PartyContract.EventMaster.DATE + ", " + PartyContract.EventMaster.TIME + ")" +
+                    "VALUES('Christmas Party', 'December 20, 2017', '12:30 PM');" +
+                    "INSERT INTO " + PartyContract.EventDetails.TABLE_NAME +
+                    "VALUES('Paper plates', 'Pieces', 20, 1);";
+
+    public static PartyDbHelper instance;
+
+    public static synchronized PartyDbHelper getInstance(Context context) {
+        if (instance == null) {
+            return new PartyDbHelper(context);
+        }
+        return instance;
+    }
+
+    private PartyDbHelper(Context context) {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
     }
 
@@ -47,11 +64,32 @@ public class PartyDbHelper extends SQLiteOpenHelper {
     public void onCreate(SQLiteDatabase db) {
         db.execSQL(SQL_CREATE_EVENT_TABLE);
         db.execSQL(SQL_CREATE_DETAILS_TABLE);
-        db.execSQL(SQL_CREATE_CONTRIBUTION_TABLE);
+        //db.execSQL(SQL_CREATE_CONTRIBUTION_TABLE);
     }
 
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
+        db.execSQL("DROP TABLE IF EXISTS " + PartyContract.Contribution.TABLE_NAME);
+        db.execSQL("DROP TABLE IF EXISTS " + PartyContract.EventDetails.TABLE_NAME);
+        db.execSQL("DROP TABLE IF EXISTS " + PartyContract.EventMaster.TABLE_NAME);
+        onCreate(db);
+        db.execSQL(SQL_INITIAL_DATA);
+    }
 
+    @Override
+    public void onDowngrade(SQLiteDatabase db, int oldVersion, int newVersion) {
+        onUpgrade(db, oldVersion, newVersion);
+    }
+
+    @Override
+    public void onConfigure(SQLiteDatabase db) {
+        db.setForeignKeyConstraintsEnabled(true);
+    }
+
+    public void delete(int position, String table_name, Context context) {
+        SQLiteDatabase db = getInstance(context).getWritableDatabase();
+        String whereClause = "_id=?";
+        String[] whereArgs = new String[] {String.valueOf(position)};
+        db.delete(table_name, whereClause, whereArgs);
     }
 }
