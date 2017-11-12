@@ -1,4 +1,4 @@
-package ca.bcit.ass3.murphy_lastname2;
+package ca.bcit.ass3.murphy_lee;
 
 
 import android.app.DatePickerDialog;
@@ -16,6 +16,7 @@ import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.text.format.DateFormat;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -44,6 +45,9 @@ public class NewEventFragment extends DialogFragment {
 
     private SQLiteDatabase db;
     private Cursor cursor;
+
+    private String[] eventToEdit;
+    private boolean isEditEvent;
 
     public NewEventFragment() {
         // Required empty public constructor
@@ -109,6 +113,16 @@ public class NewEventFragment extends DialogFragment {
             }
         });
 
+        if (getArguments() != null) {
+            eventToEdit = getArguments().getStringArray(MainActivity.EDIT_EVENT_KEY);
+            Log.i("tag", "" + eventToEdit);
+            isEditEvent = true;
+            nameInput.setText(eventToEdit[1]);
+            dateInput.setText(eventToEdit[2]);
+            timeInput.setText(eventToEdit[3]);
+        }
+
+
         return rootView;
     }
 
@@ -148,8 +162,14 @@ public class NewEventFragment extends DialogFragment {
                 String name = nameInput.getText().toString();
                 String date = dateInput.getText().toString();
                 String time = timeInput.getText().toString();
-                insertNewEvent(name, date, time);
+                if (isEditEvent) {
+                    updateExistEvent(name, date, time);
+                } else {
+                    insertNewEvent(name, date, time);
+                }
                 db.close();
+                MainActivity mainActivity = (MainActivity)getActivity();
+                mainActivity.updateEventList(mainActivity.getEventListAll());
                 dismiss();
             }
             return true;
@@ -161,6 +181,19 @@ public class NewEventFragment extends DialogFragment {
         }
 
         return super.onOptionsItemSelected(item);
+    }
+
+    private void updateExistEvent(String name, String date, String time) {
+        SQLiteOpenHelper helper = PartyDbHelper.getInstance(getContext());;
+        db = helper.getWritableDatabase();
+
+        ContentValues values = new ContentValues();
+        values.put(PartyContract.EventMaster.NAME, name);
+        values.put(PartyContract.EventMaster.DATE, date);
+        values.put(PartyContract.EventMaster.TIME, time);
+
+        db.update(PartyContract.EventMaster.TABLE_NAME, values,
+                PartyContract.EventMaster._ID + "=" + eventToEdit[0], null);
     }
 
     private void insertNewEvent(String name, String date, String time) {

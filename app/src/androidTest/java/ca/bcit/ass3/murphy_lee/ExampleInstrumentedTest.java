@@ -1,4 +1,4 @@
-package ca.bcit.ass3.murphy_lastname2;
+package ca.bcit.ass3.murphy_lee;
 
 import android.content.Context;
 import android.support.test.InstrumentationRegistry;
