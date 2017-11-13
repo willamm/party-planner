@@ -28,17 +28,6 @@ public class PartyDbHelper extends SQLiteOpenHelper {
                     "REFERENCES " + PartyContract.EventMaster.TABLE_NAME + "(" + PartyContract.EventMaster._ID + ")" +
                     ");";
 
-    private static final String SQL_CREATE_CONTRIBUTION_TABLE =
-            "CREATE TABLE " + PartyContract.Contribution.TABLE_NAME + " (" +
-                    PartyContract.Contribution._ID + " INTEGER PRIMARY KEY AUTOINCREMENT, " +
-                    PartyContract.Contribution.NAME + " TEXT, " +
-                    PartyContract.Contribution.QUANTITY + " INTEGER, " +
-                    PartyContract.Contribution.DATE + " NUMERIC, " +
-                    PartyContract.Contribution.DETAIL_ID + " INTEGER, " +
-                    "FOREIGN KEY(" + PartyContract.Contribution.DETAIL_ID + ") " +
-                    "REFERENCES " + PartyContract.EventDetails.TABLE_NAME + "(" + PartyContract.EventDetails._ID + ")" +
-                    ");";
-
     private static final String SQL_INITIAL_DATA =
             "INSERT INTO " + PartyContract.EventMaster.TABLE_NAME +
                     "(" + PartyContract.EventMaster.NAME + ", " + PartyContract.EventMaster.DATE + ", " + PartyContract.EventMaster.TIME + ")" +
@@ -63,7 +52,6 @@ public class PartyDbHelper extends SQLiteOpenHelper {
     public void onCreate(SQLiteDatabase db) {
         db.execSQL(SQL_CREATE_EVENT_TABLE);
         db.execSQL(SQL_CREATE_DETAILS_TABLE);
-        //db.execSQL(SQL_CREATE_CONTRIBUTION_TABLE);
     }
 
     @Override
@@ -83,12 +71,5 @@ public class PartyDbHelper extends SQLiteOpenHelper {
     @Override
     public void onConfigure(SQLiteDatabase db) {
         db.setForeignKeyConstraintsEnabled(true);
-    }
-
-    public void delete(int position, String table_name, Context context) {
-        SQLiteDatabase db = getInstance(context).getWritableDatabase();
-        String whereClause = "_id=?";
-        String[] whereArgs = new String[] {String.valueOf(position)};
-        db.delete(table_name, whereClause, whereArgs);
     }
 }

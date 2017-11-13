@@ -1,11 +1,14 @@
 <resources>
-    <string name="app_name">Murphy_LastName2</string>
+    <string name="app_name">Murphy_Lee</string>
     <string name="action_create_event">Create Event</string>
     <string name="action_search_events">Search Events</string>
-    <string name="search_hint">Search events</string>
     <string name="action_add_pledge">Add Pledge</string>
-    <string name="title_fragment_event">New event</string>
+    <string name="title_fragment_event">New Event</string>
     <string name="exit_dialog">Exit</string>
+
+    <!--Search strings-->
+    <string name="search_no_results">No results found!</string>
+    <string name="search_results">Results found!</string>
 
     <!---Event entry strings-->
     <string name="event_name">Name</string>

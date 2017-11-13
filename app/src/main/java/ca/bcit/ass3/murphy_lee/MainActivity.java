@@ -4,7 +4,6 @@ import android.app.SearchManager;
 import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
-import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
@@ -24,7 +23,7 @@ import android.widget.Toast;
 import java.util.ArrayList;
 import java.util.List;
 
-public class MainActivity extends AppCompatActivity implements PartyFragment.OnFragmentInteractionListener {
+public class MainActivity extends AppCompatActivity {
 
     public static final String EDIT_EVENT_KEY = "edit_event";
     private boolean isLargeLayout;
@@ -46,26 +45,8 @@ public class MainActivity extends AppCompatActivity implements PartyFragment.OnF
 
         isLargeLayout = getResources().getBoolean(R.bool.large_layout);
 
-        List<String> items = new ArrayList<>();
 
         updateEventList(getEventListAll());
-        /*
-        PartyDbHelper helper = PartyDbHelper.getInstance(this);
-        SQLiteDatabase db = helper.getReadableDatabase();
-        Cursor cursor = db.query(PartyContract.EventMaster.TABLE_NAME,
-                new String[] {PartyContract.EventMaster._ID,PartyContract.EventMaster.NAME}, null,null,null,null,null);
-
-        final List<String> list = new ArrayList<>();
-        while (cursor.moveToNext()) {
-            String id = cursor.getString(cursor.getColumnIndexOrThrow(PartyContract.EventMaster._ID));
-            String name = cursor.getString(cursor.getColumnIndexOrThrow(PartyContract.EventMaster.NAME));
-            list.add(id + " " + name);
-        }
-        cursor.close();
-
-        ArrayAdapter<String> adapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, list);
-        eventView.setAdapter(adapter);
-        */
 
         eventView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
@@ -73,7 +54,7 @@ public class MainActivity extends AppCompatActivity implements PartyFragment.OnF
                 Bundle b = new Bundle();
                 String str = (String) eventView.getItemAtPosition(i);
                 eventToAddItem = str.split("\n");
-                b.putInt("EVENT_ID", Integer.valueOf(eventToAddItem[0]));
+                b.putInt("EVENT_ID", i + 1);
 
                 PartyFragment partyFragment = PartyFragment.newInstance(b);
                 FragmentManager fragmentManager = getSupportFragmentManager();
@@ -84,7 +65,6 @@ public class MainActivity extends AppCompatActivity implements PartyFragment.OnF
                 transaction.commit();
             }
         });
-        //db.close();
     }
 
     @Override
@@ -105,7 +85,7 @@ public class MainActivity extends AppCompatActivity implements PartyFragment.OnF
         SearchManager searchManager = (SearchManager) getSystemService(Context.SEARCH_SERVICE);
         SearchView searchView = (SearchView) searchItem.getActionView();
         searchView.setSearchableInfo(searchManager.getSearchableInfo(getComponentName()));
-        searchView.setQueryHint("Search Events");
+        searchView.setQueryHint(getResources().getString(R.string.action_search_events));
 
         searchItem.setOnActionExpandListener(new MenuItem.OnActionExpandListener() {
             @Override
@@ -134,10 +114,10 @@ public class MainActivity extends AppCompatActivity implements PartyFragment.OnF
             public boolean onQueryTextSubmit(String query) {
                 String sqlQuery = getEventListByKeyword(query);
                 if (!updateEventList(sqlQuery)) {
-                    Toast.makeText(MainActivity.this,"No records found!", Toast.LENGTH_LONG).show();
+                    Toast.makeText(MainActivity.this, R.string.search_no_results, Toast.LENGTH_LONG).show();
                     return false;
                 } else {
-                    Toast.makeText(MainActivity.this, "Records found!",Toast.LENGTH_LONG).show();
+                    Toast.makeText(MainActivity.this, R.string.search_results, Toast.LENGTH_LONG).show();
                     return true;
                 }
             }
@@ -212,24 +192,20 @@ public class MainActivity extends AppCompatActivity implements PartyFragment.OnF
         ArrayAdapter<String> adapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, list);
         eventView.setAdapter(adapter);
         cursor.close();
-        db.close();
         return somethingToShow;
     }
 
     @Override
-    public void onFragmentInteraction(Uri uri) {
-
-    }
-
-    @Override
     public void onCreateContextMenu(ContextMenu menu, View v, ContextMenu.ContextMenuInfo menuInfo) {
+        super.onCreateContextMenu(menu, v, menuInfo);
         if (v.getId() == eventView.getId()) {
             AdapterView.AdapterContextMenuInfo acmi = (AdapterView.AdapterContextMenuInfo) menuInfo;
             String str = (String) eventView.getItemAtPosition(acmi.position);
             eventToModify = str.split("\n");
-            menu.add("Edit");
-            menu.add("Delete");
+            MenuInflater menuInflater = getMenuInflater();
+            menuInflater.inflate(R.menu.item_context, menu);
         }
+
     }
 
     @Override

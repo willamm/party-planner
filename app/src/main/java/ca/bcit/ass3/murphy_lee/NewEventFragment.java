@@ -11,7 +11,6 @@ import android.database.sqlite.SQLiteOpenHelper;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.app.DialogFragment;
-import android.support.v4.app.Fragment;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
@@ -34,9 +33,6 @@ import java.util.Calendar;
 import java.util.Locale;
 
 
-/**
- * A simple {@link Fragment} subclass.
- */
 public class NewEventFragment extends DialogFragment {
 
     private EditText nameInput;
@@ -167,14 +163,13 @@ public class NewEventFragment extends DialogFragment {
                 } else {
                     insertNewEvent(name, date, time);
                 }
-                db.close();
                 MainActivity mainActivity = (MainActivity)getActivity();
                 mainActivity.updateEventList(mainActivity.getEventListAll());
                 dismiss();
             }
             return true;
         } else if (id == android.R.id.home) {
-            // handle close button click here
+            // handle close button click here'
             getActivity().onBackPressed();
             dismiss();
             return true;
@@ -184,7 +179,7 @@ public class NewEventFragment extends DialogFragment {
     }
 
     private void updateExistEvent(String name, String date, String time) {
-        SQLiteOpenHelper helper = PartyDbHelper.getInstance(getContext());;
+        SQLiteOpenHelper helper = PartyDbHelper.getInstance(getContext());
         db = helper.getWritableDatabase();
 
         ContentValues values = new ContentValues();
@@ -216,5 +211,4 @@ public class NewEventFragment extends DialogFragment {
             return true;
         }
     }
-
 }
