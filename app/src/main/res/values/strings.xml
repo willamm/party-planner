@@ -5,6 +5,7 @@
     <string name="action_add_pledge">Add Pledge</string>
     <string name="title_fragment_event">New Event</string>
     <string name="exit_dialog">Exit</string>
+    <string name="empty_fields">Empty inputs not allowed</string>
 
     <!--Search strings-->
     <string name="search_no_results">No results found!</string>
@@ -24,4 +25,7 @@
     <string name="item_unit_hint">Unit</string>
     <string name="edit_context">Edit</string>
     <string name="delete_context">Delete</string>
+    <string name="add_item_title">Add New Item</string>
+    <string name="add_item_save">Save</string>
+    <string name="add_item_cancel">Cancel</string>
 </resources>

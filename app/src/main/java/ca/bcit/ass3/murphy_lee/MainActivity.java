@@ -210,7 +210,7 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     public boolean onContextItemSelected(MenuItem item) {
-        if (item.getTitle() == "Edit") {
+        if (item.getItemId() == R.id.edit_item) {
             FragmentManager fragmentManager = getSupportFragmentManager();
             NewEventFragment newEventFragment = new NewEventFragment();
             Bundle args = new Bundle();
@@ -221,7 +221,7 @@ public class MainActivity extends AppCompatActivity {
             transaction.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE);
             transaction.add(android.R.id.content, newEventFragment).addToBackStack(null).commit();
             return true;
-        } else if (item.getTitle() == "Delete") {
+        } else if (item.getItemId() == R.id.delete_item) {
             int success = db.delete(
                     PartyContract.EventMaster.TABLE_NAME,
                     PartyContract.EventMaster._ID + "=" + eventToModify[0],

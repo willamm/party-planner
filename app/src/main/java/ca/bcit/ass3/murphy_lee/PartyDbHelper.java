@@ -26,16 +26,10 @@ public class PartyDbHelper extends SQLiteOpenHelper {
                     PartyContract.EventDetails.EVENT_ID + " INTEGER, " +
                     "FOREIGN KEY(" + PartyContract.EventDetails.EVENT_ID + ") " +
                     "REFERENCES " + PartyContract.EventMaster.TABLE_NAME + "(" + PartyContract.EventMaster._ID + ")" +
+                    "ON DELETE CASCADE" +
                     ");";
 
-    private static final String SQL_INITIAL_DATA =
-            "INSERT INTO " + PartyContract.EventMaster.TABLE_NAME +
-                    "(" + PartyContract.EventMaster.NAME + ", " + PartyContract.EventMaster.DATE + ", " + PartyContract.EventMaster.TIME + ")" +
-                    "VALUES('Christmas Party', 'December 20, 2017', '12:30 PM');" +
-                    "INSERT INTO " + PartyContract.EventDetails.TABLE_NAME +
-                    "VALUES('Paper plates', 'Pieces', 20, 1);";
-
-    public static PartyDbHelper instance;
+    private static PartyDbHelper instance;
 
     public static synchronized PartyDbHelper getInstance(Context context) {
         if (instance == null) {
@@ -60,7 +54,6 @@ public class PartyDbHelper extends SQLiteOpenHelper {
         db.execSQL("DROP TABLE IF EXISTS " + PartyContract.EventDetails.TABLE_NAME);
         db.execSQL("DROP TABLE IF EXISTS " + PartyContract.EventMaster.TABLE_NAME);
         onCreate(db);
-        db.execSQL(SQL_INITIAL_DATA);
     }
 
     @Override

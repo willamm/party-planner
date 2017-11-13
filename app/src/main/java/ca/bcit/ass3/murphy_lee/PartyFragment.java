@@ -65,12 +65,15 @@ public class PartyFragment extends ListFragment {
         partyToolbar.setTitle(R.string.party_fragment_title);
 
         FloatingActionButton addItemsButton = rootView.findViewById(R.id.add_party_items);
-
+        String[] columns = new String[]{PartyContract.EventDetails.ITEM_NAME
+                , PartyContract.EventDetails.ITEM_UNIT
+                , PartyContract.EventDetails.ITEM_QUANTITY};
         db = partyDbHelper.getReadableDatabase();
-        Cursor cursor = db.query(PartyContract.EventDetails.TABLE_NAME,
-                new String[]{PartyContract.EventDetails.ITEM_NAME, PartyContract.EventDetails.ITEM_UNIT, PartyContract.EventDetails.ITEM_QUANTITY},
-                PartyContract.EventDetails.EVENT_ID + "=?", new String[]{this.getArguments().getInt("EVENT_ID") + ""},
-                null
+        Cursor cursor = db.query(PartyContract.EventDetails.TABLE_NAME
+                , columns
+                , PartyContract.EventDetails.EVENT_ID + "=?"
+                , new String[]{this.getArguments().getInt("EVENT_ID") + ""}
+                , null
                 , null
                 , null);
         List<String> itemList = new ArrayList<>();
@@ -82,9 +85,7 @@ public class PartyFragment extends ListFragment {
         }
         itemAdapter = new ItemAdapter(getContext(), R.layout.layout_items, itemList);
         setListAdapter(itemAdapter);
-        //remove later
-        int event_id = PartyFragment.this.getArguments().getInt("EVENT_ID");
-        Toast.makeText(getContext(), "" + event_id, Toast.LENGTH_LONG).show();
+
         cursor.close();
 
         addItemsButton.setOnClickListener(new View.OnClickListener() {
@@ -100,18 +101,17 @@ public class PartyFragment extends ListFragment {
         AlertDialog.Builder alertDialog = new AlertDialog.Builder(getContext());
         View addItemView = LayoutInflater.from(getContext()).inflate(R.layout.dialog_new_item, null);
         alertDialog.setView(addItemView);
-        alertDialog.setTitle("Add new item");
+        alertDialog.setTitle(R.string.add_item_title);
 
         itemName = addItemView.findViewById(R.id.itemName);
         itemType = addItemView.findViewById(R.id.itemType);
         itemQuantity = addItemView.findViewById(R.id.itemQuantity);
 
-        alertDialog.setPositiveButton("Save", new DialogInterface.OnClickListener() {
+        alertDialog.setPositiveButton(R.string.add_item_save, new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialogInterface, int i) {
                 ContentValues values = new ContentValues();
                 int event_id = PartyFragment.this.getArguments().getInt("EVENT_ID");
-                Toast.makeText(getContext(), "" + event_id, Toast.LENGTH_LONG).show();
                 if (!TextUtils.isEmpty(itemName.getText()) && !TextUtils.isEmpty(itemType.getText())
                         && !TextUtils.isEmpty(itemQuantity.getText())) {
                     values.put(PartyContract.EventDetails.ITEM_NAME, itemName.getText().toString());
@@ -126,11 +126,11 @@ public class PartyFragment extends ListFragment {
                             , SQLiteDatabase.CONFLICT_REPLACE);
                     itemAdapter.updateListView(values);
                 } else {
-                    Toast.makeText(getContext(), "Cannot have empty fields", Toast.LENGTH_LONG).show();
+                    Toast.makeText(getContext(), R.string.empty_fields, Toast.LENGTH_LONG).show();
                 }
             }
         });
-        alertDialog.setNegativeButton("Cancel", null);
+        alertDialog.setNegativeButton(R.string.add_item_cancel, null);
         alertDialog.show();
     }
 
@@ -158,13 +158,14 @@ public class PartyFragment extends ListFragment {
     @Override
     public boolean onContextItemSelected(MenuItem item) {
         AdapterView.AdapterContextMenuInfo acmi = (AdapterView.AdapterContextMenuInfo) item.getMenuInfo();
+        String selected = itemAdapter.getItem(acmi.position);
         switch(item.getItemId()) {
             case R.id.delete_item: {
-                itemAdapter.remove(itemAdapter.getItem(acmi.position));
+                itemAdapter.remove(selected);
                 return true;
             }
             case R.id.edit_item: {
-
+                openAddItemDialog();
             }
         }
         return super.onContextItemSelected(item);

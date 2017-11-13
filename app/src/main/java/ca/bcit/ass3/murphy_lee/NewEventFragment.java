@@ -207,7 +207,7 @@ public class NewEventFragment extends DialogFragment {
         if (etText.getText().toString().trim().length() > 0) {
             return false;
         } else {
-            Toast.makeText(getContext(), "Inputs cannot be empty.", Toast.LENGTH_SHORT).show();
+            Toast.makeText(getContext(), R.string.empty_fields, Toast.LENGTH_SHORT).show();
             return true;
         }
     }
