@@ -65,7 +65,8 @@ public class ItemAdapter extends ArrayAdapter<String> {
                 .getWritableDatabase()
                 .delete(PartyContract.EventDetails.TABLE_NAME, whereClause, whereArgs);
     }
-    public void editItem(int position) {
+
+    public void editItem(String str) {
 
     }
 
