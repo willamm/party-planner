@@ -19,6 +19,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.Toast;
@@ -28,7 +29,7 @@ import java.util.List;
 
 public class PartyFragment extends ListFragment {
 
-    private ItemAdapter itemAdapter;
+    private ArrayAdapter<String> itemAdapter;
     private PartyDbHelper partyDbHelper;
     private SQLiteDatabase db;
 
@@ -65,7 +66,8 @@ public class PartyFragment extends ListFragment {
         partyToolbar.setTitle(R.string.party_fragment_title);
 
         FloatingActionButton addItemsButton = rootView.findViewById(R.id.add_party_items);
-        String[] columns = new String[]{PartyContract.EventDetails.ITEM_NAME
+        String[] columns = new String[]{PartyContract.EventDetails._ID
+                , PartyContract.EventDetails.ITEM_NAME
                 , PartyContract.EventDetails.ITEM_UNIT
                 , PartyContract.EventDetails.ITEM_QUANTITY};
         db = partyDbHelper.getReadableDatabase();
@@ -78,12 +80,13 @@ public class PartyFragment extends ListFragment {
                 , null);
         List<String> itemList = new ArrayList<>();
         while(cursor.moveToNext()) {
+            String id = cursor.getString(cursor.getColumnIndexOrThrow(PartyContract.EventDetails._ID));
             String itemName = cursor.getString(cursor.getColumnIndexOrThrow(PartyContract.EventDetails.ITEM_NAME));
             String itemUnit = cursor.getString(cursor.getColumnIndexOrThrow(PartyContract.EventDetails.ITEM_UNIT));
             String itemQuantity = cursor.getString(cursor.getColumnIndexOrThrow(PartyContract.EventDetails.ITEM_QUANTITY));
-            itemList.add(itemName + " " + itemUnit + " " + itemQuantity);
+            itemList.add(id + "\n" + itemName + "\n" + itemUnit + "\n" + itemQuantity);
         }
-        itemAdapter = new ItemAdapter(getContext(), R.layout.layout_items, itemList);
+        itemAdapter = new ItemAdapter(getContext(), android.R.layout.simple_list_item_1, itemList);
         setListAdapter(itemAdapter);
 
         cursor.close();
@@ -118,13 +121,13 @@ public class PartyFragment extends ListFragment {
                     values.put(PartyContract.EventDetails.ITEM_UNIT, itemType.getText().toString());
                     values.put(PartyContract.EventDetails.ITEM_QUANTITY, itemQuantity.getText().toString());
                     values.put(PartyContract.EventDetails.EVENT_ID, event_id);
-
                     db = partyDbHelper.getWritableDatabase();
                     db.insertWithOnConflict(PartyContract.EventDetails.TABLE_NAME
                             , null
                             , values
                             , SQLiteDatabase.CONFLICT_REPLACE);
-                    itemAdapter.updateListView(values);
+
+                    ((ItemAdapter) itemAdapter).updateListView(values);
                 } else {
                     Toast.makeText(getContext(), R.string.empty_fields, Toast.LENGTH_LONG).show();
                 }
@@ -165,7 +168,9 @@ public class PartyFragment extends ListFragment {
                 return true;
             }
             case R.id.edit_item: {
+                itemAdapter.remove(selected);
                 openAddItemDialog();
+                return true;
             }
         }
         return super.onContextItemSelected(item);

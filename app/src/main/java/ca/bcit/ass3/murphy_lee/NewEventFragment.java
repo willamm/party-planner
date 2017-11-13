@@ -117,8 +117,6 @@ public class NewEventFragment extends DialogFragment {
             dateInput.setText(eventToEdit[2]);
             timeInput.setText(eventToEdit[3]);
         }
-
-
         return rootView;
     }
 

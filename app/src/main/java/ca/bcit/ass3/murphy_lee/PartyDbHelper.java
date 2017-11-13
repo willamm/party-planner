@@ -6,7 +6,7 @@ import android.database.sqlite.SQLiteOpenHelper;
 
 public class PartyDbHelper extends SQLiteOpenHelper {
 
-    private static final int DATABASE_VERSION = 1;
+    private static final int DATABASE_VERSION = 2;
 
     private static final String DATABASE_NAME = "Party.db";
 
@@ -29,7 +29,7 @@ public class PartyDbHelper extends SQLiteOpenHelper {
                     "ON DELETE CASCADE" +
                     ");";
 
-    private static PartyDbHelper instance;
+    private static PartyDbHelper instance = null;
 
     public static synchronized PartyDbHelper getInstance(Context context) {
         if (instance == null) {
@@ -46,6 +46,9 @@ public class PartyDbHelper extends SQLiteOpenHelper {
     public void onCreate(SQLiteDatabase db) {
         db.execSQL(SQL_CREATE_EVENT_TABLE);
         db.execSQL(SQL_CREATE_DETAILS_TABLE);
+        db.execSQL("INSERT INTO " + PartyContract.EventMaster.TABLE_NAME
+                + "(name,date,time)"
+                + " VALUES ('Christmas Party','December 25, 2017','7:30 PM')");
     }
 
     @Override

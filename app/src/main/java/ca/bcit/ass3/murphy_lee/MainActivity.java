@@ -26,7 +26,6 @@ import java.util.List;
 public class MainActivity extends AppCompatActivity {
 
     public static final String EDIT_EVENT_KEY = "edit_event";
-    private boolean isLargeLayout;
     private ListView eventView;
     private SQLiteDatabase db;
     String[] eventToAddItem;
@@ -43,9 +42,6 @@ public class MainActivity extends AppCompatActivity {
         eventView = findViewById(R.id.events);
         registerForContextMenu(eventView);
 
-        isLargeLayout = getResources().getBoolean(R.bool.large_layout);
-
-
         updateEventList(getEventListAll());
 
         eventView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
@@ -54,7 +50,7 @@ public class MainActivity extends AppCompatActivity {
                 Bundle b = new Bundle();
                 String str = (String) eventView.getItemAtPosition(i);
                 eventToAddItem = str.split("\n");
-                b.putInt("EVENT_ID", Integer.valueOf(eventToAddItem[0])); // passing correct event_ID
+                b.putInt("EVENT_ID", Integer.parseInt(eventToAddItem[0]));
 
                 PartyFragment partyFragment = PartyFragment.newInstance(b);
                 FragmentManager fragmentManager = getSupportFragmentManager();
@@ -170,7 +166,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public boolean updateEventList(String sqlQuery) {
-        PartyDbHelper helper = PartyDbHelper.getInstance(this);;
+        PartyDbHelper helper = PartyDbHelper.getInstance(this);
         db = helper.getReadableDatabase();
         Cursor cursor = db.rawQuery(sqlQuery, null);
 
@@ -202,14 +198,13 @@ public class MainActivity extends AppCompatActivity {
             String str = (String) eventView.getItemAtPosition(acmi.position);
             eventToModify = str.split("\n");
             MenuInflater menuInflater = getMenuInflater();
-            menuInflater.inflate(R.menu.item_context, menu);
+            menuInflater.inflate(R.menu.event_context, menu);
         }
-
     }
 
     @Override
     public boolean onContextItemSelected(MenuItem item) {
-        if (item.getItemId() == R.id.edit_item) {
+        if (item.getItemId() == R.id.edit_event) {
             FragmentManager fragmentManager = getSupportFragmentManager();
             NewEventFragment newEventFragment = new NewEventFragment();
             Bundle args = new Bundle();
@@ -220,11 +215,11 @@ public class MainActivity extends AppCompatActivity {
             transaction.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE);
             transaction.add(android.R.id.content, newEventFragment).addToBackStack(null).commit();
             return true;
-        } else if (item.getItemId() == R.id.delete_item) {
+        } else if (item.getItemId() == R.id.delete_event) {
             int success = db.delete(
                     PartyContract.EventMaster.TABLE_NAME,
-                    PartyContract.EventMaster._ID + "=" + eventToModify[0],
-                    null);
+                    PartyContract.EventMaster._ID + "=?",
+                    new String[]{eventToModify[0]});
             if (success > 0) {
                 updateEventList(getEventListAll());
             }

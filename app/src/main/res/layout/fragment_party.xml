@@ -4,7 +4,7 @@
     android:layout_height="match_parent"
     android:background="?android:attr/windowBackground"
     android:clickable="true"
-    android:focusable="auto"
+    android:focusable="true"
     tools:context=".PartyFragment">
 
     <android.support.v7.widget.Toolbar
